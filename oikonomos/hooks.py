@@ -19,6 +19,11 @@ required_apps = ["seminary", "erpnext"]
 # academic flows get real ERPNext-backed billing, otherwise the null backend.
 seminary_financial_backend = ["oikonomos.financial.backend.OikonomosFinancialBackend"]
 
+# Fixtures owned by oikonomos (relocated from seminary with their doctypes).
+fixtures = [
+    "Trigger Fee Events",
+]
+
 # Each item in the list will be shown as an app in the apps page
 # add_to_apps_screen = [
 # 	{
