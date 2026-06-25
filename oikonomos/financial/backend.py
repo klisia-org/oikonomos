@@ -37,6 +37,11 @@ class OikonomosFinancialBackend(FinancialBackend):
     def generate_program_enrollment_invoices(self, pfc_doc) -> dict:
         return _generate_program_enrollment_invoices(pfc_doc)
 
+    def process_withdrawal_refunds(self, withdrawal_doc) -> None:
+        from oikonomos.financial.withdrawal import process_refunds
+
+        process_refunds(withdrawal_doc)
+
 
 # ---------------------------------------------------------------------------
 # Course-enrollment billing engine (relocated from the seminary CEI controller's
