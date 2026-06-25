@@ -157,6 +157,10 @@ doc_events = {
         "on_submit": "oikonomos.financial.extension.on_submit",
         "on_cancel": "oikonomos.financial.extension.on_cancel",
     },
+    "Graduation Request": {
+        "on_submit": "oikonomos.financial.graduation.on_submit",
+        "on_cancel": "oikonomos.financial.graduation.on_cancel",
+    },
 }
 
 # Scheduled Tasks
