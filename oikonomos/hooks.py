@@ -161,6 +161,9 @@ doc_events = {
         "on_submit": "oikonomos.financial.graduation.on_submit",
         "on_cancel": "oikonomos.financial.graduation.on_cancel",
     },
+    "Student Applicant": {
+        "after_insert": "oikonomos.financial.application.on_applicant_insert",
+    },
 }
 
 # Scheduled Tasks
