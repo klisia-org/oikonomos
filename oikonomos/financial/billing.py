@@ -145,7 +145,7 @@ def resolve_scholarship(
     full payer percentage — the scholarship is computed here, not baked into payer
     rows. Only ever call this for the student's own payer line.
     """
-    from seminary.seminary.doctype.scholarship_award.scholarship_award import (
+    from oikonomos.oikonomos.doctype.scholarship_award.scholarship_award import (
         get_active_award,
     )
 
