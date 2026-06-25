@@ -14,6 +14,11 @@ app_license = "gpl-3.0"
 # oikonomos or erpnext. See the oikonomos decoupling roadmap.
 required_apps = ["seminary", "erpnext"]
 
+# Register oikonomos as seminary's financial backend. Seminary resolves this via
+# frappe.get_hooks("seminary_financial_backend"); with oikonomos installed its
+# academic flows get real ERPNext-backed billing, otherwise the null backend.
+seminary_financial_backend = ["oikonomos.financial.backend.OikonomosFinancialBackend"]
+
 # Each item in the list will be shown as an app in the apps page
 # add_to_apps_screen = [
 # 	{
