@@ -145,15 +145,19 @@ seminary_financial_backend = ["oikonomos.financial.backend.OikonomosFinancialBac
 
 # Document Events
 # ---------------
-# Hook on document methods and events
+# Hook on document methods and events.
+#
+# Oikonomos subscribes to seminary academic doctypes here (the "emit" seam): the
+# academic flow just submits its doc, and oikonomos reacts with billing. When
+# oikonomos is absent these handlers are simply not registered, so seminary runs
+# free.
 
-# doc_events = {
-# 	"*": {
-# 		"on_update": "method",
-# 		"on_cancel": "method",
-# 		"on_trash": "method"
-# 	}
-# }
+doc_events = {
+    "Culminating Project Extension": {
+        "on_submit": "oikonomos.financial.extension.on_submit",
+        "on_cancel": "oikonomos.financial.extension.on_cancel",
+    },
+}
 
 # Scheduled Tasks
 # ---------------
