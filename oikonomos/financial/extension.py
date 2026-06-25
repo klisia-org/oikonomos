@@ -13,7 +13,7 @@ affects credits / grade / GPA / transcript (ADR 024). Idempotent via `invoiced`.
 import frappe
 from frappe import _
 
-from seminary.seminary.billing import create_extension_invoices
+from oikonomos.financial.billing import create_extension_invoices
 
 
 def on_submit(doc, method=None):
