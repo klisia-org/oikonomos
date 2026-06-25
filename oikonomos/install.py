@@ -65,4 +65,8 @@ SALES_INVOICE_CUSTOM_FIELDS = {
 
 def ensure_custom_fields():
     create_custom_fields(SALES_INVOICE_CUSTOM_FIELDS, ignore_validate=True)
+    # Instructor payroll fields/components — only when HRMS is on (no-op otherwise).
+    from oikonomos.financial.salary_slip import provision_payroll_if_enabled
+
+    provision_payroll_if_enabled()
     frappe.db.commit()

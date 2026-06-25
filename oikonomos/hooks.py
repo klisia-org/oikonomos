@@ -180,6 +180,17 @@ doc_events = {
         "on_update_after_submit": "oikonomos.oikonomos.doctype.student_balance.student_balance.refresh_balance_on_invoice_update",
         "on_cancel": "oikonomos.oikonomos.doctype.student_balance.student_balance.remove_cancelled_invoice_from_balance",
     },
+    # Instructor payroll (Salary Slip + Instructor Log Payment, relocated from
+    # seminary). Gated on HRMS at runtime via _hrms_enabled.
+    "Salary Slip": {
+        "before_validate": "oikonomos.financial.salary_slip.populate_instructor_summary",
+        "on_submit": "oikonomos.financial.salary_slip.post_submit_instructor_log_payments",
+        "on_cancel": "oikonomos.financial.salary_slip.cancel_instructor_log_payments",
+    },
+    # Provision payroll custom fields when instructor payroll is toggled on.
+    "Seminary Settings": {
+        "on_update": "oikonomos.financial.salary_slip.on_seminary_settings_update",
+    },
 }
 
 # Student Balance is scoped to the student's own record (relocated from seminary).
