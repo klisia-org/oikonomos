@@ -169,6 +169,24 @@ doc_events = {
     "Student Applicant": {
         "after_insert": "oikonomos.financial.application.on_applicant_insert",
     },
+    # Student Balance lifecycle (doctype relocated from seminary). A balance is
+    # opened for every Student and tracks their submitted Sales Invoices.
+    "Student": {
+        "after_insert": "oikonomos.oikonomos.doctype.student_balance.student_balance.create_student_balance",
+    },
+    "Sales Invoice": {
+        "on_submit": "oikonomos.oikonomos.doctype.student_balance.student_balance.add_invoice_to_student_balance",
+        "on_update_after_submit": "oikonomos.oikonomos.doctype.student_balance.student_balance.refresh_balance_on_invoice_update",
+        "on_cancel": "oikonomos.oikonomos.doctype.student_balance.student_balance.remove_cancelled_invoice_from_balance",
+    },
+}
+
+# Student Balance is scoped to the student's own record (relocated from seminary).
+permission_query_conditions = {
+    "Student Balance": "oikonomos.oikonomos.doctype.student_balance.student_balance_permissions.get_permission_query_conditions",
+}
+has_permission = {
+    "Student Balance": "oikonomos.oikonomos.doctype.student_balance.student_balance_permissions.has_permission",
 }
 
 # Scheduled Tasks
