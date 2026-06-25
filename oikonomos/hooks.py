@@ -8,7 +8,11 @@ app_license = "gpl-3.0"
 # Apps
 # ------------------
 
-# required_apps = []
+# Oikonomos is the financial bridge: it depends on BOTH seminary (the pure-Frappe
+# academic core) and erpnext (the accounting engine). This one-directional
+# dependency is what lets seminary run on Frappe alone — seminary never imports
+# oikonomos or erpnext. See the oikonomos decoupling roadmap.
+required_apps = ["seminary", "erpnext"]
 
 # Each item in the list will be shown as an app in the apps page
 # add_to_apps_screen = [
