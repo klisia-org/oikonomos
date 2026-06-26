@@ -105,7 +105,7 @@ fixtures = [
 # Installation
 # ------------
 
-# before_install = "oikonomos.install.before_install"
+before_install = "oikonomos.install.before_install"
 after_install = "oikonomos.install.after_install"
 after_migrate = "oikonomos.install.after_migrate"
 

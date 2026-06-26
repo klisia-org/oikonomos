@@ -15,12 +15,20 @@ import frappe
 from frappe.custom.doctype.custom_field.custom_field import create_custom_fields
 
 
+def before_install():
+    # Oikonomos requires ERPNext (required_apps) and its billing flows need a set
+    # up ERPNext (Company, Fiscal Year, Price Lists). Verify before installing.
+    check_erpnext()
+
+
 def after_install():
+    setup_erpnext_groups()
     ensure_custom_fields()
     _seed()
 
 
 def after_migrate():
+    setup_erpnext_groups()
     ensure_custom_fields()
     _seed()
 
@@ -29,6 +37,67 @@ def _seed():
     from oikonomos.financial.seed import seed_billing_config
 
     seed_billing_config()
+
+
+def check_erpnext():
+    """Block install unless ERPNext is installed and its Setup Wizard is complete
+    (relocated from seminary — seminary itself is now Frappe-only)."""
+    from frappe import _
+
+    if "erpnext" not in frappe.get_installed_apps():
+        frappe.throw(
+            _("ERPNext must be installed before installing Oikonomos"),
+            title=_("Missing Dependency"),
+        )
+    errors = []
+    if not frappe.get_all("Company", limit=1, pluck="name"):
+        errors.append(_("No Company found. Complete the ERPNext Setup Wizard first."))
+    if not frappe.db.count("Fiscal Year"):
+        errors.append(_("No Fiscal Year found."))
+    if not frappe.db.get_value("Price List", {"selling": 1, "enabled": 1}, "name"):
+        errors.append(_("No active Selling Price List found."))
+    if errors:
+        frappe.throw(
+            _("ERPNext setup is incomplete: {0}").format(" ".join(errors)),
+            title=_("Setup Incomplete"),
+        )
+
+
+def setup_erpnext_groups():
+    """Create the ERPNext groups seminary billing relies on (relocated from
+    seminary.install.setup_fixtures). Idempotent via make_records."""
+    from frappe import _
+    from frappe.desk.page.setup_wizard.setup_wizard import make_records
+
+    default_price_list = frappe.db.get_value(
+        "Price List", {"selling": 1, "enabled": 1}, "name", order_by="creation asc"
+    )
+    customer_groups = [
+        "Student",
+        "Donor",
+        "Church",
+        "Denomination",
+        "Seminary",
+        "Para-church Organization",
+        "Alumni",
+        "Board Member",
+        "Volunteer",
+    ]
+    records = [{"doctype": "Item Group", "item_group_name": "Tuition"}]
+    records += [
+        {
+            "doctype": "Customer Group",
+            "customer_group_name": g,
+            "default_price_list": default_price_list,
+        }
+        for g in customer_groups
+    ]
+    records += [
+        {"doctype": "UOM", "uom_name": _("Academic Event"), "must_be_whole_number": 0},
+        {"doctype": "UOM", "uom_name": _("Credit hour"), "must_be_whole_number": 0},
+        {"doctype": "Supplier Group", "supplier_group_name": _("Instructor")},
+    ]
+    make_records(records)
 
 
 # Seminary's link/marker fields on Sales Invoice. custom_student is created by
