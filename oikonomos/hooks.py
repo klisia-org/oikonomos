@@ -22,6 +22,12 @@ seminary_financial_backend = ["oikonomos.financial.backend.OikonomosFinancialBac
 # Fixtures owned by oikonomos (relocated from seminary with their doctypes).
 fixtures = [
     "Trigger Fee Events",
+    # UOM "Fee" (billing unit). Fee Items + Payment Terms are NOT fixtured — they
+    # are seeded create-once by oikonomos.financial.seed so a seminary's edits
+    # survive migrate.
+    {"dt": "UOM", "filters": [["name", "=", "Fee"]]},
+    {"dt": "Print Format", "filters": [["name", "=", "Seminary Sales Invoice"]]},
+    {"dt": "Workflow", "filters": [["name", "=", "Scholarship Award Lifecycle"]]},
 ]
 
 # Each item in the list will be shown as an app in the apps page

@@ -17,10 +17,18 @@ from frappe.custom.doctype.custom_field.custom_field import create_custom_fields
 
 def after_install():
     ensure_custom_fields()
+    _seed()
 
 
 def after_migrate():
     ensure_custom_fields()
+    _seed()
+
+
+def _seed():
+    from oikonomos.financial.seed import seed_billing_config
+
+    seed_billing_config()
 
 
 # Seminary's link/marker fields on Sales Invoice. custom_student is created by
