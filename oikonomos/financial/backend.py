@@ -31,8 +31,8 @@ class OikonomosFinancialBackend(FinancialBackend):
     def payment_status_for_graduation(self, gr_name: str) -> PaymentAggregate:
         return _aggregate_invoices("custom_graduation_request", gr_name)
 
-    def generate_enrollment_invoice(self, cei_doc) -> None:
-        _generate_enrollment_invoice(cei_doc)
+    def generate_enrollment_invoice(self, cei_doc) -> int:
+        return _generate_enrollment_invoice(cei_doc)
 
     def generate_program_enrollment_invoices(self, pfc_doc) -> dict:
         return _generate_program_enrollment_invoices(pfc_doc)
@@ -88,7 +88,11 @@ def prepare_enrollment_payers(doc, method=None):
     get_payers(doc, method)
 
 
-def _generate_enrollment_invoice(cei_doc) -> None:
+def _generate_enrollment_invoice(cei_doc) -> int:
+    """Raise the Course-Enrollment Sales Invoice(s) for a CEI and return how many
+    payer lines were billed. A return of 0 means nothing matched — no Course
+    Enrollment fee is wired into the program's payers, or the Item Price is
+    missing — so the caller must NOT mark the enrollment as invoiced."""
     from oikonomos.financial.billing import (
         build_and_create_invoice,
         create_scholarship_invoice,
@@ -193,6 +197,8 @@ def _generate_enrollment_invoice(cei_doc) -> None:
                 link_value=cei_doc.name,
             )
         i += 1
+
+    return rows
 
 
 # ---------------------------------------------------------------------------
