@@ -63,6 +63,9 @@ fixtures = [
 # page_js = {"page" : "public/js/file.js"}
 
 # include js in doctype views
+# Constrain the oikonomos-owned Account / Cost Center link fields on the
+# seminary's Seminary Settings (added as custom fields by oikonomos).
+doctype_js = {"Seminary Settings": "public/js/seminary_settings.js"}
 # doctype_js = {"doctype" : "public/js/doctype.js"}
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
