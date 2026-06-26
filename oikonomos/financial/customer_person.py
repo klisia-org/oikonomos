@@ -87,11 +87,54 @@ CUSTOM_FIELDS = {
             "Drives which Price List is applied.",
         },
     ],
+    # Student Contacts is a pure-academic references/emergency-contacts child
+    # table; seminary keeps it textual (a typed Connection Name). When ERPNext is
+    # present, restore the original behaviour: each reference links to a Customer
+    # and the name auto-fetches read-only from it (see PROPERTY_SETTERS).
+    "Student Contacts": [
+        {
+            "fieldname": "contact",
+            "fieldtype": "Link",
+            "label": "Connected to",
+            "options": "Customer",
+            "insert_after": "",
+            "in_list_view": 1,
+            "reqd": 1,
+        },
+    ],
 }
+
+
+# Property setters restoring the integrated Student Contacts behaviour: with the
+# Customer link present, the Connection Name is fetched from it and locked.
+PROPERTY_SETTERS = [
+    {
+        "doctype_or_field": "DocField",
+        "doctype": "Student Contacts",
+        "fieldname": "contact_name",
+        "property": "fetch_from",
+        "property_type": "Small Text",
+        "value": "contact.customer_name",
+    },
+    {
+        "doctype_or_field": "DocField",
+        "doctype": "Student Contacts",
+        "fieldname": "contact_name",
+        "property": "read_only",
+        "property_type": "Check",
+        "value": "1",
+    },
+]
 
 
 def setup_custom_fields():
     create_custom_fields(CUSTOM_FIELDS, ignore_validate=True)
+    # Idempotent: Property Setter autoname is "{doc_type}-{field_name}-{property}",
+    # so skip re-creating on every migrate.
+    for ps in PROPERTY_SETTERS:
+        name = "{0}-{1}-{2}".format(ps["doctype"], ps["fieldname"], ps["property"])
+        if not frappe.db.exists("Property Setter", name):
+            frappe.make_property_setter(ps, is_system_generated=True)
 
 
 # ---------------------------------------------------------------------------
