@@ -150,6 +150,10 @@ SEMINARY_SETTINGS_CUSTOM_FIELDS = {
 def ensure_custom_fields():
     create_custom_fields(SALES_INVOICE_CUSTOM_FIELDS, ignore_validate=True)
     create_custom_fields(SEMINARY_SETTINGS_CUSTOM_FIELDS, ignore_validate=True)
+    # Customer<->Person link + Student billing-identity fields.
+    from oikonomos.financial.customer_person import setup_custom_fields as setup_cp
+
+    setup_cp()
     # Instructor payroll fields/components — only when HRMS is on (no-op otherwise).
     from oikonomos.financial.salary_slip import provision_payroll_if_enabled
 

@@ -180,6 +180,7 @@ doc_events = {
     # opened for every Student and tracks their submitted Sales Invoices.
     "Student": {
         "after_insert": "oikonomos.oikonomos.doctype.student_balance.student_balance.create_student_balance",
+        "on_update": "oikonomos.financial.customer_person.on_student_update",
     },
     "Sales Invoice": {
         "on_submit": "oikonomos.oikonomos.doctype.student_balance.student_balance.add_invoice_to_student_balance",
