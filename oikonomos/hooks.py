@@ -257,6 +257,8 @@ standard_portal_menu_items = [
 scheduler_events = {
     "daily": [
         "oikonomos.financial.invoicing.run_billing_automation",
+        # Scholarship retention review (relocated from seminary tasks.daily).
+        "oikonomos.financial.scholarship.review_scholarship_retention",
     ],
 }
 

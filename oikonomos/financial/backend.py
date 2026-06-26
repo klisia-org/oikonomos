@@ -52,6 +52,23 @@ class OikonomosFinancialBackend(FinancialBackend):
 
         get_payers(frappe.get_doc("Program Enrollment", pe_name), None)
 
+    def student_scholarships(self, student: str) -> list:
+        from oikonomos.financial.scholarship import get_student_scholarship
+
+        return get_student_scholarship(student)
+
+    def available_scholarships(self, student: str) -> list:
+        from oikonomos.financial.scholarship import get_available_scholarships
+
+        return get_available_scholarships(student)
+
+    def apply_for_scholarship(
+        self, program_enrollment: str, scholarship: str, comment: str | None = None
+    ) -> str | None:
+        from oikonomos.financial.scholarship import apply_for_scholarship
+
+        return apply_for_scholarship(program_enrollment, scholarship, comment)
+
 
 # ---------------------------------------------------------------------------
 # Course-enrollment billing engine (relocated from the seminary CEI controller's
