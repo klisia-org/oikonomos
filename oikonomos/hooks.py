@@ -208,10 +208,37 @@ doc_events = {
         "after_insert": "oikonomos.oikonomos.doctype.student_balance.student_balance.create_student_balance",
         "on_update": "oikonomos.financial.customer_person.on_student_update",
     },
+    # Sales Invoice drives both the Student Balance ledger and payment-reactive
+    # academic advancement (CEI / Graduation Request). The advancement handlers
+    # trace the SI back to its academic doc and call seminary's entry point.
     "Sales Invoice": {
-        "on_submit": "oikonomos.oikonomos.doctype.student_balance.student_balance.add_invoice_to_student_balance",
-        "on_update_after_submit": "oikonomos.oikonomos.doctype.student_balance.student_balance.refresh_balance_on_invoice_update",
-        "on_cancel": "oikonomos.oikonomos.doctype.student_balance.student_balance.remove_cancelled_invoice_from_balance",
+        "on_submit": [
+            "oikonomos.oikonomos.doctype.student_balance.student_balance.add_invoice_to_student_balance",
+            "oikonomos.financial.cei_payment.maybe_advance_cei_on_payment",
+            "oikonomos.financial.graduation.on_si_submit",
+        ],
+        "on_update_after_submit": [
+            "oikonomos.oikonomos.doctype.student_balance.student_balance.refresh_balance_on_invoice_update",
+            "oikonomos.financial.cei_payment.maybe_advance_cei_on_payment",
+            "oikonomos.financial.graduation.on_si_update_after_submit",
+        ],
+        "on_cancel": [
+            "oikonomos.oikonomos.doctype.student_balance.student_balance.remove_cancelled_invoice_from_balance",
+            "oikonomos.financial.cei_payment.maybe_notify_registrar_on_invoice_cancel",
+        ],
+    },
+    # Payment Entry posting is what actually moves outstanding_amount (ERPNext uses
+    # db.set_value, bypassing SI's on_update_after_submit), so payment-driven
+    # advancement hooks here directly.
+    "Payment Entry": {
+        "on_submit": [
+            "oikonomos.financial.cei_payment.on_payment_entry_submit",
+            "oikonomos.financial.graduation.on_payment_entry_submit",
+        ],
+        "on_cancel": [
+            "oikonomos.financial.cei_payment.on_payment_entry_cancel",
+            "oikonomos.financial.graduation.on_payment_entry_cancel",
+        ],
     },
     # Instructor payroll (Salary Slip + Instructor Log Payment, relocated from
     # seminary). Gated on HRMS at runtime via _hrms_enabled.

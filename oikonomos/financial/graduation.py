@@ -195,3 +195,64 @@ def _resolve_pricing(payer):
         )
 
     return item, price_list, price_list_rate
+
+
+# ---------------------------------------------------------------------------
+# Payment-reactive advancement (relocated from seminary's
+# graduation_request_lifecycle). Oikonomos traces a Sales Invoice / Payment Entry
+# back to its Graduation Request and calls seminary's academic entry point.
+# ---------------------------------------------------------------------------
+
+
+def on_si_submit(doc, method=None):
+    """Sales Invoice on_submit — recompute paid_percent for any linked GR.
+    Covers SIs created already-submitted (auto-submit in Seminary Settings)."""
+    gr = getattr(doc, "custom_graduation_request", None)
+    if gr:
+        _react(gr)
+
+
+def on_si_update_after_submit(doc, method=None):
+    """Sales Invoice on_update_after_submit — fires on outstanding_amount changes
+    via the form. Idempotent recompute either way."""
+    gr = getattr(doc, "custom_graduation_request", None)
+    if gr:
+        _react(gr)
+
+
+def on_payment_entry_submit(doc, method=None):
+    """Payment Entry on_submit — advance every linked GR that crosses threshold."""
+    for gr_name in _grs_from_payment_entry(doc):
+        _react(gr_name)
+
+
+def on_payment_entry_cancel(doc, method=None):
+    """Payment Entry on_cancel — recompute on refund/reversal. We do NOT
+    auto-rollback an Approved GR; the registrar handles refunds explicitly."""
+    from seminary.seminary.graduation_request_lifecycle import (
+        recompute_gr_paid_percent,
+    )
+
+    for gr_name in _grs_from_payment_entry(doc):
+        recompute_gr_paid_percent(gr_name)
+
+
+def _react(gr_name):
+    from seminary.seminary.graduation_request_lifecycle import react_to_gr_payment
+
+    react_to_gr_payment(gr_name)
+
+
+def _grs_from_payment_entry(pe_doc):
+    """Distinct GR names traced from this Payment Entry's references via
+    Sales Invoice.custom_graduation_request."""
+    gr_names = set()
+    for ref in pe_doc.references or []:
+        if ref.reference_doctype != "Sales Invoice" or not ref.reference_name:
+            continue
+        gr = frappe.db.get_value(
+            "Sales Invoice", ref.reference_name, "custom_graduation_request"
+        )
+        if gr:
+            gr_names.add(gr)
+    return gr_names
