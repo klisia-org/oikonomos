@@ -1,12 +1,8 @@
 // Copyright (c) 2026, Klisia / SeminaryERP and contributors
 // For license information, please see license.txt
 
-frappe.ui.form.on("Program Fees", {
-	refresh(frm) {
-		// Only fee categories whose trigger event is not "On Use" are billable
-		// against a program up front; mirror the server-side link_filters.
-		frm.set_query("pgm_feecategory", function () {
-			return { filters: { docstatus: 1 } };
-		});
-	},
-});
+// "Event to charge" (pgm_feeevent) is derived read-only from the selected Fee
+// Category (fetch_from pgm_feecategory.fc_event). Trigger Fee Events records are
+// referenced by hard-coded name throughout the billing code, so the event is
+// never hand-picked here — pick the Fee Category and the event follows.
+frappe.ui.form.on("Program Fees", {});

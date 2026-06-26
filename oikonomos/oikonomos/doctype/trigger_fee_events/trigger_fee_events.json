@@ -1,5 +1,6 @@
 {
  "actions": [],
+ "allow_rename": 0,
  "autoname": "format:{trigger}",
  "creation": "2024-03-21 20:59:42.960644",
  "description": "List of billing events that fee categories can be tied to, such as program enrollment or course enrollment. Use it to define and activate the moments at which a fee should be charged.",
@@ -12,12 +13,14 @@
  ],
  "fields": [
   {
+   "description": "Referenced by hard-coded name throughout the billing code. Fixed once created so existing fee/billing links never break.",
    "fieldname": "trigger",
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Trigger",
    "reqd": 1,
    "search_index": 1,
+   "set_only_once": 1,
    "translatable": 1
   },
   {
