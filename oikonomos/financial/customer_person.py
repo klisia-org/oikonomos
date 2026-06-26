@@ -64,6 +64,29 @@ CUSTOM_FIELDS = {
             "insert_after": "column_break_rgpi",
         },
     ],
+    "Student Applicant": [
+        {
+            "fieldname": "customer",
+            "fieldtype": "Link",
+            "label": "Customer",
+            "options": "Customer",
+            "insert_after": "term_admission",
+            "read_only": 1,
+            "description": "The Customer record used to bill the Application fee. "
+            "Auto-created on submit if blank, using the applicant's name and "
+            "Customer Group.",
+        },
+        {
+            "fieldname": "customer_group",
+            "fieldtype": "Link",
+            "label": "Customer Group",
+            "options": "Customer Group",
+            "insert_after": "customer",
+            "default": "Individual",
+            "description": "Customer Group used to bill the Application fee. "
+            "Drives which Price List is applied.",
+        },
+    ],
 }
 
 

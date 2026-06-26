@@ -258,6 +258,10 @@ def ensure_custom_fields():
     from oikonomos.financial.customer_person import setup_custom_fields as setup_cp
 
     setup_cp()
+    # Program Level readmission-fee policy fields (Link → Fee Category).
+    from oikonomos.financial.readmission import setup_custom_fields as setup_readmission
+
+    setup_readmission()
     # Instructor payroll fields/components — only when HRMS is on (no-op otherwise).
     from oikonomos.financial.salary_slip import provision_payroll_if_enabled
 

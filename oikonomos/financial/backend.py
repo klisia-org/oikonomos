@@ -42,6 +42,11 @@ class OikonomosFinancialBackend(FinancialBackend):
 
         process_refunds(withdrawal_doc)
 
+    def charge_readmission(self, pe_name: str, effective_date) -> None:
+        from oikonomos.financial.readmission import charge_readmission
+
+        charge_readmission(pe_name, effective_date)
+
 
 # ---------------------------------------------------------------------------
 # Course-enrollment billing engine (relocated from the seminary CEI controller's
