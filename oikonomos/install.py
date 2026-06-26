@@ -147,6 +147,25 @@ SEMINARY_SETTINGS_CUSTOM_FIELDS = {
 }
 
 
+def setup_sales_invoice_permissions():
+    """Grant the Student and Alumni roles read + print access to Sales Invoice.
+
+    Row-level access is scoped to the user's own linked Student record by
+    oikonomos.financial.sales_invoice_permissions. Idempotent."""
+    from frappe import _
+    from frappe.permissions import add_permission, update_permission_property
+
+    if not frappe.db.exists("DocType", "Sales Invoice"):
+        return
+    for role in (_("Student"), _("Alumni")):
+        if not frappe.db.exists("Role", role):
+            continue
+        add_permission("Sales Invoice", role, 0)
+        update_permission_property("Sales Invoice", role, 0, "read", 1)
+        update_permission_property("Sales Invoice", role, 0, "print", 1)
+    frappe.db.commit()
+
+
 def ensure_custom_fields():
     create_custom_fields(SALES_INVOICE_CUSTOM_FIELDS, ignore_validate=True)
     create_custom_fields(SEMINARY_SETTINGS_CUSTOM_FIELDS, ignore_validate=True)
@@ -158,4 +177,5 @@ def ensure_custom_fields():
     from oikonomos.financial.salary_slip import provision_payroll_if_enabled
 
     provision_payroll_if_enabled()
+    setup_sales_invoice_permissions()
     frappe.db.commit()

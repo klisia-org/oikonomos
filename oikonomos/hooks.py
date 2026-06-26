@@ -200,13 +200,27 @@ doc_events = {
     },
 }
 
-# Student Balance is scoped to the student's own record (relocated from seminary).
+# Student Balance + Sales Invoice are scoped to the student's own record
+# (relocated from seminary; Sales Invoice is an ERPNext doctype).
 permission_query_conditions = {
     "Student Balance": "oikonomos.oikonomos.doctype.student_balance.student_balance_permissions.get_permission_query_conditions",
+    "Sales Invoice": "oikonomos.financial.sales_invoice_permissions.get_permission_query_conditions",
 }
 has_permission = {
     "Student Balance": "oikonomos.oikonomos.doctype.student_balance.student_balance_permissions.has_permission",
+    "Sales Invoice": "oikonomos.financial.sales_invoice_permissions.has_permission",
 }
+
+# Student portal "Financials" page (lists the student's Sales Invoices).
+standard_portal_menu_items = [
+    {
+        "title": "Financials",
+        "route": "/financials",
+        "reference_doctype": "Sales Invoice",
+        "role": "Student",
+        "condition": "frappe.get_all('Sales Invoice', filters={'custom_student': frappe.session.user})",
+    },
+]
 
 # Scheduled Tasks
 # ---------------
