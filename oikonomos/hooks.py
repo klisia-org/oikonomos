@@ -180,6 +180,11 @@ doc_events = {
         "on_submit": "oikonomos.financial.graduation.on_submit",
         "on_cancel": "oikonomos.financial.graduation.on_cancel",
     },
+    "Program Enrollment": {
+        # before_submit so payer rows exist before seminary's on_submit fulfiller
+        # auto-enrolls CEIs that invoice against them.
+        "before_submit": "oikonomos.financial.backend.prepare_enrollment_payers",
+    },
     "Course Enrollment Individual": {
         "on_cancel": "oikonomos.financial.backend.on_cei_cancel",
     },

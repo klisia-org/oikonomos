@@ -67,6 +67,22 @@ def on_cei_cancel(doc, method=None):
         si.cancel()
 
 
+def prepare_enrollment_payers(doc, method=None):
+    """Program Enrollment before_submit (subscribed from oikonomos): build the
+    payer rows (Payers Fee Category PE) for the enrollment. Relocated from
+    seminary's PE on_submit hook — the builder lives in seminary.api (a financial
+    helper) but only oikonomos triggers it, so a Frappe-only seminary submits a
+    Program Enrollment without billing.
+
+    Bound to before_submit (not on_submit) so it runs ahead of seminary's
+    on_submit fulfiller, whose auto-created CEIs invoice against this fee
+    structure — preserving the original single-app hook order now that the two
+    handlers live in different apps (seminary installs before oikonomos)."""
+    from seminary.seminary.api import get_payers
+
+    get_payers(doc, method)
+
+
 def _generate_enrollment_invoice(cei_doc) -> None:
     from oikonomos.financial.billing import (
         build_and_create_invoice,
