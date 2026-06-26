@@ -69,6 +69,50 @@ class OikonomosFinancialBackend(FinancialBackend):
 
         return apply_for_scholarship(program_enrollment, scholarship, comment)
 
+    def student_invoices(self, student: str | None = None) -> list:
+        from oikonomos.financial.invoice_queries import student_invoices
+
+        return student_invoices(student)
+
+    def pe_unpaid_invoices(self, program_enrollment: str) -> list:
+        from oikonomos.financial.invoice_queries import pe_unpaid_invoices
+
+        return pe_unpaid_invoices(program_enrollment)
+
+    def unpaid_invoice_for_cei(self, cei_name: str) -> dict | None:
+        from oikonomos.financial.invoice_queries import unpaid_invoice_for_cei
+
+        return unpaid_invoice_for_cei(cei_name)
+
+    def graduation_request_invoices(self, gr_name: str) -> list:
+        from oikonomos.financial.invoice_queries import graduation_request_invoices
+
+        return graduation_request_invoices(gr_name)
+
+    def application_payment_url(self, applicant_name: str) -> dict | None:
+        from oikonomos.financial.payment_urls import application_payment_url
+
+        return application_payment_url(applicant_name)
+
+    def invoice_payment_url(self, invoice_name: str) -> dict | None:
+        from oikonomos.financial.payment_urls import invoice_payment_url
+
+        return invoice_payment_url(invoice_name)
+
+    def student_balance_payment_url(self) -> dict | None:
+        from oikonomos.financial.payment_urls import student_balance_payment_url
+
+        return student_balance_payment_url()
+
+    def student_partial_balance_payment_url(
+        self, amount=None, invoices=None
+    ) -> dict | None:
+        from oikonomos.financial.payment_urls import (
+            student_partial_balance_payment_url,
+        )
+
+        return student_partial_balance_payment_url(amount, invoices)
+
 
 # ---------------------------------------------------------------------------
 # Course-enrollment billing engine (relocated from the seminary CEI controller's
