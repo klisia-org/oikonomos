@@ -158,6 +158,12 @@ after_migrate = "oikonomos.install.after_migrate"
 # oikonomos is absent these handlers are simply not registered, so seminary runs
 # free.
 
+# Override ERPNext's Payment Request to route Student Balance payments through
+# the seminary gateway flow (relocated from seminary).
+override_doctype_class = {
+    "Payment Request": "oikonomos.financial.payment_request.SeminaryPaymentRequest",
+}
+
 doc_events = {
     "Culminating Project Extension": {
         "on_submit": "oikonomos.financial.extension.on_submit",
