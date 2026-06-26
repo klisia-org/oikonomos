@@ -222,3 +222,15 @@ def get_program_pricing_html():
         _PROGRAM_PRICING_TEMPLATE,
         {"price_lists": enriched_price_lists, "programs": programs},
     )
+
+
+@frappe.whitelist()
+def get_program_fees(program):
+    """Fee Category rows configured on a program's Program Fees (the oikonomos
+    pricing schedule). Called from the Scholarships form to scope an award to a
+    program's fees."""
+    return frappe.get_all(
+        "Program Fees",
+        filters={"program": program},
+        fields=["pgm_feecategory"],
+    )

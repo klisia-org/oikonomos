@@ -49,7 +49,52 @@ def seed_billing_config():
                     frappe.get_traceback(), f"oikonomos seed {doctype} {name}"
                 )
     _update_item_company_defaults()
+    _seed_fee_categories()
     frappe.db.commit()
+
+
+def _seed_fee_categories():
+    """Seed the starter Fee Categories (create-only-if-missing). Relocated from
+    seminary install.py — Fee Category is an oikonomos doctype.
+
+    NOT fixtures: Fee Category.validate_audit() cross-checks is_credit against
+    Seminary Settings (auditcredit / allow_audit), so a fixture re-import on
+    migrate would re-validate shipped rows and throw once a seminary flips the
+    setting or edits a category. The Audit Fee is seeded flat (is_credit=0) to
+    match the default auditcredit=0. Each row needs its Item + Payment Terms
+    Template (seeded just above); rows whose deps aren't present yet are skipped
+    and filled in on the next migrate.
+    """
+    # category_name, fc_event, item, is_audit, is_credit
+    defaults = [
+        ("Program Admission Fee", "Program Enrollment", "Admission Fee", 0, 0),
+        ("Registration fee (new term)", "New Academic Term", "Admission Fee", 0, 0),
+        ("Credit hour", "Course Enrollment", "Credit hour", 0, 1),
+        ("Audit Fee", "Course Enrollment", "Audit Flat Fee", 1, 0),
+    ]
+    payment_term_template = "For immediate payment"
+    has_payment_term = frappe.db.exists(
+        "Payment Terms Template", payment_term_template
+    )
+    for category_name, fc_event, item, is_audit, is_credit in defaults:
+        if frappe.db.exists("Fee Category", category_name):
+            continue
+        if not frappe.db.exists("Item", item):
+            continue
+        frappe.get_doc(
+            {
+                "doctype": "Fee Category",
+                "category_name": category_name,
+                "feecategory_type": "Tuition",
+                "fc_event": fc_event,
+                "item": item,
+                "is_audit": is_audit,
+                "is_credit": is_credit,
+                "payment_term_template": (
+                    payment_term_template if has_payment_term else None
+                ),
+            }
+        ).insert(ignore_permissions=True)
 
 
 def _resolve_company_context():

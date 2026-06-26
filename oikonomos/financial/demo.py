@@ -56,6 +56,9 @@ def install_demo_data():
         seed_billing_catalog()
         d.create_users()
         d.create_students()
+        # Tag the auto-created student Customers (billing identities) so the demo
+        # teardown removes them too.
+        _tag_demo_customers()
         d.create_instructor_categories()
         d.create_instructors()
         frappe.db.commit()
@@ -144,6 +147,23 @@ def _ensure_item_price(item, price_list, rate):
     )
     ip.flags.ignore_permissions = True
     ip.insert()
+
+
+def _tag_demo_customers():
+    """Tag the Customers auto-created for demo students (via on_student_update) so
+    remove_demo_billing finds them. Demo students themselves are tagged by
+    seminary's insert_demo_doc; their Customer link gives us the billing identity."""
+    from seminary.seminary.demo.cleanup import DEMO_TAG
+
+    demo_students = frappe.get_all(
+        "Tag Link",
+        filters={"document_type": "Student", "tag": DEMO_TAG},
+        pluck="document_name",
+    )
+    for stu in demo_students:
+        customer = frappe.db.get_value("Student", stu, "customer")
+        if customer:
+            frappe.get_doc("Customer", customer).add_tag(DEMO_TAG)
 
 
 def remove_demo_billing(deleted_counts=None):

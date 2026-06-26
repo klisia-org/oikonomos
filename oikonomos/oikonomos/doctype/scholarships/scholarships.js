@@ -16,7 +16,7 @@ frappe.ui.form.on("Scholarships", {
     program: function(frm) {
         // Populate the child table sch_discounts with the Programs fees of the selected Program
         frappe.call({
-            method: "seminary.seminary.api.get_program_fees",
+            method: "oikonomos.financial.pricing.get_program_fees",
             args: {
                 program: frm.doc.program
             },

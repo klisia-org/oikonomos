@@ -119,6 +119,39 @@ class OikonomosFinancialBackend(FinancialBackend):
             filters["docstatus"] = ("<", 2)
         return frappe.get_all("Sales Invoice", filters=filters, pluck="name")
 
+    def set_enrollment_payers_active(self, pe_name: str, active: bool) -> None:
+        pfc = frappe.db.get_value(
+            "Payers Fee Category PE", {"pf_pe": pe_name}, "name"
+        )
+        if pfc:
+            frappe.db.set_value(
+                "Payers Fee Category PE",
+                pfc,
+                "pf_active",
+                1 if active else 0,
+                update_modified=False,
+            )
+
+    def company_country(self) -> str | None:
+        company = frappe.db.get_single_value("Seminary Settings", "company")
+        if company:
+            return frappe.db.get_value("Company", company, "country")
+        return None
+
+    def company_holiday_dates(self) -> set:
+        company = frappe.db.get_single_value("Seminary Settings", "company")
+        if not company:
+            return set()
+        holiday_list = frappe.db.get_value(
+            "Company", company, "default_holiday_list"
+        )
+        if not holiday_list:
+            return set()
+        dates = frappe.get_all(
+            "Holiday", filters={"parent": holiday_list}, pluck="holiday_date"
+        )
+        return {frappe.utils.getdate(d) for d in dates if d}
+
 
 # ---------------------------------------------------------------------------
 # Course-enrollment billing engine (relocated from the seminary CEI controller's
