@@ -63,8 +63,93 @@ SALES_INVOICE_CUSTOM_FIELDS = {
 }
 
 
+# Seminary Settings financial/asset config. These Link ERPNext doctypes
+# (Company/Account/Cost Center/Customer/Location/Payment Gateway), so they live in
+# the bridge and are absent on a Frappe-only install. Intentionally NOT mandatory
+# (reqd omitted) — billing config is validated by oikonomos where needed, not by a
+# hard doctype requirement that would block a seminary that hasn't set up billing.
+SEMINARY_SETTINGS_CUSTOM_FIELDS = {
+    "Seminary Settings": [
+        {
+            "fieldname": "root_asset_location",
+            "fieldtype": "Link",
+            "label": "Root Asset Location",
+            "options": "Location",
+            "insert_after": "sync_rooms_to_asset_locations",
+            "description": (
+                "Optional. Root of the Location subtree the seminary's campuses/"
+                'rooms hang under. Leave blank to auto-create and use a "Seminary '
+                'Locations" root.'
+            ),
+        },
+        {
+            "fieldname": "accounts_section",
+            "fieldtype": "Section Break",
+            "label": "Accounts",
+            "insert_after": "grade_close_offset_days",
+        },
+        {
+            "fieldname": "receivable_account",
+            "fieldtype": "Link",
+            "label": "Receivable Account",
+            "options": "Account",
+            "insert_after": "accounts_section",
+        },
+        {
+            "fieldname": "column_break_wmyg",
+            "fieldtype": "Column Break",
+            "insert_after": "receivable_account",
+        },
+        {
+            "fieldname": "company",
+            "fieldtype": "Link",
+            "label": "Company",
+            "options": "Company",
+            "insert_after": "column_break_wmyg",
+        },
+        {
+            "fieldname": "income_account",
+            "fieldtype": "Link",
+            "label": "Income Account",
+            "options": "Account",
+            "insert_after": "company",
+        },
+        {
+            "fieldname": "cost_center",
+            "fieldtype": "Link",
+            "label": "Cost Center",
+            "options": "Cost Center",
+            "insert_after": "income_account",
+        },
+        {
+            "fieldname": "scholarship_cc",
+            "fieldtype": "Link",
+            "label": "Scholarship - Cost Center",
+            "options": "Cost Center",
+            "insert_after": "scholarships_section",
+        },
+        {
+            "fieldname": "scholarship_cust",
+            "fieldtype": "Link",
+            "label": "Scholarship - Customer",
+            "options": "Customer",
+            "insert_after": "scholarship_cc",
+            "description": "This customer will be used in all Sales Invoices of Scholarships.",
+        },
+        {
+            "fieldname": "payment_gateway",
+            "fieldtype": "Link",
+            "label": "Payment Gateway",
+            "options": "Payment Gateway",
+            "insert_after": "section_break_fxlm",
+        },
+    ],
+}
+
+
 def ensure_custom_fields():
     create_custom_fields(SALES_INVOICE_CUSTOM_FIELDS, ignore_validate=True)
+    create_custom_fields(SEMINARY_SETTINGS_CUSTOM_FIELDS, ignore_validate=True)
     # Instructor payroll fields/components — only when HRMS is on (no-op otherwise).
     from oikonomos.financial.salary_slip import provision_payroll_if_enabled
 
