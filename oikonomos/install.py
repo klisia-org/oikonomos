@@ -25,6 +25,11 @@ def after_install():
     setup_erpnext_groups()
     ensure_custom_fields()
     _seed()
+    # Adopting billing on an existing (previously Frappe-only) seminary: give
+    # already-created students/enrollments their billing scaffolding so prior
+    # records are billable. No-op on a fresh install. Idempotent; creates no
+    # invoices.
+    _backfill()
 
 
 def after_migrate():
@@ -37,6 +42,12 @@ def _seed():
     from oikonomos.financial.seed import seed_billing_config
 
     seed_billing_config()
+
+
+def _backfill():
+    from oikonomos.financial.backfill import backfill_billing_identities
+
+    backfill_billing_identities()
 
 
 def check_erpnext():
