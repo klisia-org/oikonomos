@@ -57,11 +57,14 @@ def _generate_application_invoices(applicant_name):
     if program.is_free:
         return _empty_invoice_result("free program")
 
-    application_rows = [
-        row
-        for row in (program.pgm_pgmfees or [])
-        if row.pgm_feeevent == "Application" and row.pgm_feecategory
-    ]
+    # Program Fees is now a standalone oikonomos doctype linked back to Program
+    # (the inversion of the old Program.pgm_pgmfees child table).
+    application_rows = frappe.get_all(
+        "Program Fees",
+        filters={"program": program.name, "pgm_feeevent": "Application"},
+        fields=["name", "pgm_feecategory"],
+    )
+    application_rows = [r for r in application_rows if r.pgm_feecategory]
     if not application_rows:
         return _empty_invoice_result("no Application fee configured on program")
 
