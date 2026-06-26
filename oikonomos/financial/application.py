@@ -9,9 +9,8 @@ has something to charge against. With no bridge installed the applicant is
 created with no charge.
 
 The shared billing helpers (`_billing_context`, `_ensure_applicant_customer`,
-`_empty_invoice_result`) still live in `seminary.seminary.api` and are imported
-across the boundary; they relocate into oikonomos with the rest of the api.py
-billing block in a later phase.
+`_empty_invoice_result`) live alongside the trigger-invoice generators in
+`oikonomos.financial.invoicing`.
 """
 
 import frappe
@@ -42,7 +41,7 @@ def _generate_application_invoices(applicant_name):
     Free programs and applicants whose Program has no Application fee configured
     are no-ops.
     """
-    from seminary.seminary.api import (
+    from oikonomos.financial.invoicing import (
         _billing_context,
         _empty_invoice_result,
         _ensure_applicant_customer,

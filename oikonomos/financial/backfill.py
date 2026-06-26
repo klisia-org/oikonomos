@@ -51,7 +51,7 @@ def _backfill_enrollment_payers():
     submitted Program Enrollment that has none, from the program's current
     Program Fees — the same builder used at enrollment time. Runs after customer
     backfill so the payer (the student's Customer) resolves."""
-    from seminary.seminary.api import get_payers
+    from oikonomos.financial.payers import get_payers
 
     pes = frappe.get_all(
         "Program Enrollment",

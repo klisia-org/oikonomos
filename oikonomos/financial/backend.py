@@ -47,6 +47,11 @@ class OikonomosFinancialBackend(FinancialBackend):
 
         charge_readmission(pe_name, effective_date)
 
+    def sync_enrollment_payers(self, pe_name: str) -> None:
+        from oikonomos.financial.payers import get_payers
+
+        get_payers(frappe.get_doc("Program Enrollment", pe_name), None)
+
 
 # ---------------------------------------------------------------------------
 # Course-enrollment billing engine (relocated from the seminary CEI controller's
@@ -83,7 +88,7 @@ def prepare_enrollment_payers(doc, method=None):
     on_submit fulfiller, whose auto-created CEIs invoice against this fee
     structure — preserving the original single-app hook order now that the two
     handlers live in different apps (seminary installs before oikonomos)."""
-    from seminary.seminary.api import get_payers
+    from oikonomos.financial.payers import get_payers
 
     get_payers(doc, method)
 

@@ -251,6 +251,15 @@ standard_portal_menu_items = [
 # Scheduled Tasks
 # ---------------
 
+# Automatic billing is the bridge's responsibility (relocated from seminary's
+# tasks.daily). Gated internally on the seminary `billing_automation_enabled`
+# flag; a Frappe-only seminary never runs it (oikonomos isn't installed).
+scheduler_events = {
+    "daily": [
+        "oikonomos.financial.invoicing.run_billing_automation",
+    ],
+}
+
 # scheduler_events = {
 # 	"all": [
 # 		"oikonomos.tasks.all"

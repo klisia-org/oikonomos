@@ -78,7 +78,7 @@ def charge_readmission(pe_name, effective_date):
     if not policy.readmission_fee_category:
         return
 
-    from seminary.seminary.api import generate_readmission_invoice
+    from oikonomos.financial.invoicing import generate_readmission_invoice
 
     generate_readmission_invoice(
         pe_name, policy.readmission_fee_category, effective_date
