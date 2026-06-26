@@ -243,7 +243,15 @@ def setup_sales_invoice_permissions():
     frappe.db.commit()
 
 
+def before_uninstall():
+    # Hide the billing UI again when the bridge is removed.
+    if frappe.db.exists("DocType", "Seminary Settings"):
+        frappe.db.set_single_value("Seminary Settings", "has_oikonomos", 0)
+
+
 def ensure_custom_fields():
+    # Flag the billing bridge as present so seminary's gated billing fields/UI show.
+    frappe.db.set_single_value("Seminary Settings", "has_oikonomos", 1)
     create_custom_fields(SALES_INVOICE_CUSTOM_FIELDS, ignore_validate=True)
     create_custom_fields(SEMINARY_SETTINGS_CUSTOM_FIELDS, ignore_validate=True)
     # Customer<->Person link + Student billing-identity fields.
