@@ -113,6 +113,12 @@ class OikonomosFinancialBackend(FinancialBackend):
 
         return student_partial_balance_payment_url(amount, invoices)
 
+    def cei_invoices(self, cei_name: str, include_cancelled: bool = False) -> list:
+        filters = {"custom_cei": cei_name}
+        if not include_cancelled:
+            filters["docstatus"] = ("<", 2)
+        return frappe.get_all("Sales Invoice", filters=filters, pluck="name")
+
 
 # ---------------------------------------------------------------------------
 # Course-enrollment billing engine (relocated from the seminary CEI controller's

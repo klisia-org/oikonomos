@@ -146,6 +146,70 @@ def _ensure_item_price(item, price_list, rate):
     ip.insert()
 
 
+def remove_demo_billing(deleted_counts=None):
+    """seminary_demo_cleanup hook: tear down the billing demo records (Sales
+    Invoices auto-raised for demo CEIs + the demo Customers) before seminary
+    deletes the academic docs they reference. Records counts into the shared
+    ``deleted_counts`` dict so they appear in the cleanup summary."""
+    from seminary.seminary.demo.cleanup import DEMO_TAG
+
+    if deleted_counts is None:
+        deleted_counts = {}
+
+    # Sales Invoices are auto-created on CEI submission (not tagged); find them
+    # via the demo CEIs and force-delete (docstatus=2 bypasses GL/payment checks).
+    demo_ceis = frappe.get_all(
+        "Tag Link",
+        filters={"document_type": "Course Enrollment Individual", "tag": DEMO_TAG},
+        pluck="document_name",
+    )
+    if demo_ceis:
+        si_count = 0
+        for inv_name in frappe.get_all(
+            "Sales Invoice", filters={"custom_cei": ("in", demo_ceis)}, pluck="name"
+        ):
+            try:
+                frappe.db.set_value(
+                    "Sales Invoice", inv_name, "docstatus", 2, update_modified=False
+                )
+                frappe.delete_doc(
+                    "Sales Invoice",
+                    inv_name,
+                    force=True,
+                    ignore_permissions=True,
+                    delete_permanently=True,
+                )
+                si_count += 1
+            except Exception:
+                frappe.log_error(f"Failed to delete Sales Invoice {inv_name}")
+        if si_count:
+            deleted_counts["Sales Invoice"] = si_count
+
+    # Demo Customers (the student billing identities) are tagged like the rest of
+    # the demo data.
+    cust_count = 0
+    for cust in frappe.get_all(
+        "Tag Link",
+        filters={"document_type": "Customer", "tag": DEMO_TAG},
+        pluck="document_name",
+    ):
+        try:
+            frappe.delete_doc(
+                "Customer",
+                cust,
+                force=True,
+                ignore_permissions=True,
+                delete_permanently=True,
+            )
+            cust_count += 1
+        except Exception:
+            frappe.log_error(f"Failed to delete Customer {cust}")
+    if cust_count:
+        deleted_counts["Customer"] = cust_count
+
+    return deleted_counts
+
+
 def _ensure_program_fee(program, spec):
     if frappe.db.exists(
         "Program Fees", {"program": program, "pgm_feecategory": spec["fee_category"]}

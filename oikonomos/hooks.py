@@ -23,6 +23,10 @@ seminary_financial_backend = ["oikonomos.financial.backend.OikonomosFinancialBac
 # present so the demo gets a fee catalog and the enrollments/CEIs invoice.
 seminary_demo_installer = ["oikonomos.financial.demo.install_demo_data"]
 
+# Symmetric teardown: remove the billing demo records (Sales Invoices, Customers)
+# before seminary deletes the academic docs they reference.
+seminary_demo_cleanup = ["oikonomos.financial.demo.remove_demo_billing"]
+
 # Fixtures owned by oikonomos (relocated from seminary with their doctypes).
 fixtures = [
     "Trigger Fee Events",

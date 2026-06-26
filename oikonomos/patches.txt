@@ -7,3 +7,5 @@
 oikonomos.patches.migrate_program_fees_to_standalone
 oikonomos.patches.reown_relocated_reports
 oikonomos.patches.reown_program_pricing_page
+# Relocated from seminary (purely-oikonomos Customer<->Person backfill).
+oikonomos.patches.link_customers_to_persons
