@@ -19,6 +19,10 @@ required_apps = ["seminary", "erpnext"]
 # academic flows get real ERPNext-backed billing, otherwise the null backend.
 seminary_financial_backend = ["oikonomos.financial.backend.OikonomosFinancialBackend"]
 
+# Billing-inclusive demo installer. seminary.demo.install_demo defers to this when
+# present so the demo gets a fee catalog and the enrollments/CEIs invoice.
+seminary_demo_installer = ["oikonomos.financial.demo.install_demo_data"]
+
 # Fixtures owned by oikonomos (relocated from seminary with their doctypes).
 fixtures = [
     "Trigger Fee Events",
