@@ -6,3 +6,4 @@
 # Patches added in this section will be executed after doctypes are migrated
 oikonomos.patches.migrate_program_fees_to_standalone
 oikonomos.patches.reown_relocated_reports
+oikonomos.patches.reown_program_pricing_page
