@@ -51,6 +51,22 @@ class OikonomosFinancialBackend(FinancialBackend):
 # ---------------------------------------------------------------------------
 
 
+def on_cei_cancel(doc, method=None):
+    """Course Enrollment Individual on_cancel (subscribed from oikonomos): cancel
+    the enrollment's submitted Sales Invoices. Relocated from the seminary CEI
+    controller — Sales Invoice is ERPNext's, so a Frappe-only seminary cancels a
+    CEI without touching billing."""
+    invoices = frappe.get_all(
+        "Sales Invoice",
+        filters={"custom_cei": doc.name, "docstatus": 1, "is_return": 0},
+        pluck="name",
+    )
+    for inv_name in invoices:
+        si = frappe.get_doc("Sales Invoice", inv_name)
+        si.flags.ignore_permissions = True
+        si.cancel()
+
+
 def _generate_enrollment_invoice(cei_doc) -> None:
     from oikonomos.financial.billing import (
         build_and_create_invoice,

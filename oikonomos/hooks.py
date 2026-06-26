@@ -179,6 +179,9 @@ doc_events = {
         "on_submit": "oikonomos.financial.graduation.on_submit",
         "on_cancel": "oikonomos.financial.graduation.on_cancel",
     },
+    "Course Enrollment Individual": {
+        "on_cancel": "oikonomos.financial.backend.on_cei_cancel",
+    },
     "Student Applicant": {
         "after_insert": "oikonomos.financial.application.on_applicant_insert",
     },
