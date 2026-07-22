@@ -3,7 +3,7 @@ app_title = "Oikonomos"
 app_publisher = "Klisia / SeminaryERP"
 app_description = "Seminary to ERPNext bridge: billing, payments and financial integration for Seminary"
 app_email = "support@seminaryerp.org"
-app_license = "gpl-3.0"
+app_license = "mit"
 
 # Apps
 # ------------------
