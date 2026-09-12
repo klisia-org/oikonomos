@@ -122,6 +122,7 @@ doctype_js = {
 
 before_install = "oikonomos.install.before_install"
 after_install = "oikonomos.install.after_install"
+after_sync = "oikonomos.install.after_sync"
 after_migrate = "oikonomos.install.after_migrate"
 before_uninstall = "oikonomos.install.before_uninstall"
 
