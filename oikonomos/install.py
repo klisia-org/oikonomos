@@ -24,6 +24,17 @@ def before_install():
 def after_install():
     setup_erpnext_groups()
     ensure_custom_fields()
+
+
+def after_sync():
+    # Seeding runs here rather than in after_install because frappe's
+    # install_app calls after_install *before* sync_fixtures
+    # (frappe/installer.py). The seeded Fee Categories link to Trigger Fee
+    # Events rows that only exist once our fixtures are synced, so on a fresh
+    # site the seed died with "Could not find Event to charge: Course
+    # Enrollment". Existing benches never showed it because an earlier migrate
+    # had already loaded the fixtures. after_migrate needs no change: migrate
+    # syncs fixtures before its after_migrate hooks.
     _seed()
     # Adopting billing on an existing (previously Frappe-only) seminary: give
     # already-created students/enrollments their billing scaffolding so prior
@@ -214,7 +225,7 @@ SEMINARY_SETTINGS_CUSTOM_FIELDS = {
             "fieldtype": "Link",
             "label": "Scholarship - Cost Center",
             "options": "Cost Center",
-            "insert_after": "scholarships_section",
+            "insert_after": "cost_center",
         },
         {
             "fieldname": "scholarship_cust",
