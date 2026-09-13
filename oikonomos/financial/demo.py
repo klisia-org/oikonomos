@@ -153,7 +153,7 @@ def _tag_demo_customers():
     """Tag the Customers auto-created for demo students (via on_student_update) so
     remove_demo_billing finds them. Demo students themselves are tagged by
     seminary's insert_demo_doc; their Customer link gives us the billing identity."""
-    from seminary.seminary.demo.cleanup import DEMO_TAG
+    from seminary.demo.cleanup import DEMO_TAG
 
     demo_students = frappe.get_all(
         "Tag Link",
@@ -171,7 +171,7 @@ def remove_demo_billing(deleted_counts=None):
     Invoices auto-raised for demo CEIs + the demo Customers) before seminary
     deletes the academic docs they reference. Records counts into the shared
     ``deleted_counts`` dict so they appear in the cleanup summary."""
-    from seminary.seminary.demo.cleanup import DEMO_TAG
+    from seminary.demo.cleanup import DEMO_TAG
 
     if deleted_counts is None:
         deleted_counts = {}
