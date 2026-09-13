@@ -47,6 +47,16 @@ def after_migrate():
     setup_erpnext_groups()
     ensure_custom_fields()
     _seed()
+    # The Student Billing workspace arrives by migrate on sites where oikonomos
+    # was installed before it existed. Frappe builds workspace sidebars and
+    # desktop icons only on app install, so without this those sites would get
+    # the workspace page but no sidebar or icon. The generator is
+    # existence-guarded, so this is a no-op once they exist.
+    try:
+        from frappe.utils.install import auto_generate_icons_and_sidebar
+    except ImportError:  # Frappe without workspace sidebars
+        return
+    auto_generate_icons_and_sidebar()
 
 
 def _seed():

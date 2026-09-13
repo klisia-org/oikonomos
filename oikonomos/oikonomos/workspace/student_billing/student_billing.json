@@ -1,0 +1,269 @@
+{
+ "app": "oikonomos",
+ "charts": [],
+ "content": "[{\"id\": \"Frd4nW0iIN\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\">Student Billing</span>\", \"col\": 12}}, {\"id\": \"T5DezzUsOU\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Students at Scholarship Risk\", \"col\": 4}}, {\"id\": \"CieR7l7AVH\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Student Balance\", \"col\": 4}}, {\"id\": \"8idAHH179Q\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Program Fees\", \"col\": 4}}, {\"id\": \"JcmDPOrx1h\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Scholarships\", \"col\": 4}}, {\"id\": \"SIEmKka27Z\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"CEI Marked Paid Without Payment\", \"col\": 4}}, {\"id\": \"7mfi_twOtP\", \"type\": \"spacer\", \"data\": {\"col\": 12}}, {\"id\": \"g8ThiorDdb\", \"type\": \"card\", \"data\": {\"card_name\": \"Fee Setup\", \"col\": 4}}, {\"id\": \"qQU60ZUuj4\", \"type\": \"card\", \"data\": {\"card_name\": \"Scholarships\", \"col\": 4}}, {\"id\": \"ynUIGDidNO\", \"type\": \"card\", \"data\": {\"card_name\": \"Balances and Audit\", \"col\": 4}}, {\"id\": \"pjoLSI_zTw\", \"type\": \"card\", \"data\": {\"card_name\": \"Instructor Pay\", \"col\": 4}}]",
+ "creation": "2026-09-13 12:00:00.000000",
+ "custom_blocks": [],
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "for_user": "",
+ "hide_custom": 0,
+ "icon": "accounting",
+ "idx": 0,
+ "indicator_color": "",
+ "is_hidden": 0,
+ "label": "Student Billing",
+ "link_type": "DocType",
+ "links": [
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Fee Setup",
+   "link_count": 4,
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Fee Category",
+   "link_count": 0,
+   "link_to": "Fee Category",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Program Fees",
+   "link_count": 0,
+   "link_to": "Program Fees",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Trigger Fee Events",
+   "link_count": 0,
+   "link_to": "Trigger Fee Events",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Payers Fee Category PE",
+   "link_count": 0,
+   "link_to": "Payers Fee Category PE",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Scholarships",
+   "link_count": 5,
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Scholarships",
+   "link_count": 0,
+   "link_to": "Scholarships",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Scholarship Award",
+   "link_count": 0,
+   "link_to": "Scholarship Award",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Students at Scholarship Risk",
+   "link_count": 0,
+   "link_to": "Students at Scholarship Risk",
+   "link_type": "Report",
+   "onboard": 0,
+   "report_ref_doctype": "Scholarship Award",
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Scholarship Budget vs Given",
+   "link_count": 0,
+   "link_to": "Scholarship Budget vs Given",
+   "link_type": "Report",
+   "onboard": 0,
+   "report_ref_doctype": "Scholarships",
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Scholarship Sales Invoices",
+   "link_count": 0,
+   "link_to": "Scholarship Sales Invoices",
+   "link_type": "Report",
+   "onboard": 0,
+   "report_ref_doctype": "Scholarships",
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Balances and Audit",
+   "link_count": 3,
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Student Balance",
+   "link_count": 0,
+   "link_to": "Student Balance",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Student PE total balance",
+   "link_count": 0,
+   "link_to": "Student PE total balance",
+   "link_type": "Report",
+   "onboard": 0,
+   "report_ref_doctype": "Student",
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "CEI Marked Paid Without Payment",
+   "link_count": 0,
+   "link_to": "CEI Marked Paid Without Payment",
+   "link_type": "Report",
+   "onboard": 0,
+   "report_ref_doctype": "Course Enrollment Individual",
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Instructor Pay",
+   "link_count": 2,
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Instructor Log Payment",
+   "link_count": 0,
+   "link_to": "Instructor Log Payment",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Unpaid Instructor Log",
+   "link_count": 0,
+   "link_to": "Unpaid Instructor Log",
+   "link_type": "Report",
+   "onboard": 0,
+   "report_ref_doctype": "Instructor Log",
+   "type": "Link"
+  }
+ ],
+ "modified": "2026-09-13 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Oikonomos",
+ "name": "Student Billing",
+ "number_cards": [],
+ "owner": "Administrator",
+ "parent_page": "Seminary",
+ "public": 1,
+ "quick_lists": [],
+ "roles": [
+  {
+   "role": "Seminary Manager"
+  },
+  {
+   "role": "Registrar"
+  },
+  {
+   "role": "Program Chair"
+  },
+  {
+   "role": "Accounts Manager"
+  },
+  {
+   "role": "Accounts User"
+  }
+ ],
+ "sequence_id": 26.0,
+ "shortcuts": [
+  {
+   "color": "Grey",
+   "doc_view": "",
+   "label": "Students at Scholarship Risk",
+   "link_to": "Students at Scholarship Risk",
+   "report_ref_doctype": "Scholarship Award",
+   "type": "Report"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Student Balance",
+   "link_to": "Student Balance",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Program Fees",
+   "link_to": "Program Fees",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Scholarships",
+   "link_to": "Scholarships",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "",
+   "label": "CEI Marked Paid Without Payment",
+   "link_to": "CEI Marked Paid Without Payment",
+   "report_ref_doctype": "Course Enrollment Individual",
+   "type": "Report"
+  }
+ ],
+ "title": "Student Billing",
+ "type": "Workspace"
+}
