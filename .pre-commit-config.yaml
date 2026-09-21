@@ -63,6 +63,15 @@ repos:
                 oikonomos/public/js/lib/.*
             )$
 
+  - repo: local
+    hooks:
+      - id: stabilize-pot
+        name: Stabilize POT file (prevent translation churn)
+        entry: python scripts/stabilize-pot.py
+        language: python
+        always_run: true
+        pass_filenames: false
+
 ci:
     autoupdate_schedule: weekly
     skip: []
