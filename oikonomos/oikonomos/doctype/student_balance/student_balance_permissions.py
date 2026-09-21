@@ -2,7 +2,7 @@
 # For license information, please see license.txt
 
 import frappe
-from seminary.seminary.sales_invoice_permissions import (
+from oikonomos.financial.sales_invoice_permissions import (
     _current_student,
     _should_restrict,
 )
