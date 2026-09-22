@@ -8,15 +8,17 @@ msgstr ""
 "Project-Id-Version: Oikonomos VERSION\n"
 "Report-Msgid-Bugs-To: support@seminaryerp.org\n"
 "POT-Creation-Date: 2026-09-21 17:41-0609\n"
-"PO-Revision-Date: 2026-09-21 17:41-0609\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2026-09-22 00:28+0000\n"
+"Last-Translator: Murilo Melo <murilomelo@gmail.com>\n"
+"Language-Team: Portuguese <https://translate.seminaryerp.org/projects/klisia/"
+"oikonomos/pt/>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.16.0\n"
 "Language: pt\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Weblate 2026.9.1\n"
 
 #: oikonomos/financial/backend.py:250
 msgid " (Audit)"
@@ -38,7 +40,7 @@ msgstr ""
 #: oikonomos/oikonomos/report/unpaid_instructor_log/unpaid_instructor_log.js:20
 #: oikonomos/oikonomos/report/unpaid_instructor_log/unpaid_instructor_log.py:42
 msgid "Academic Term"
-msgstr ""
+msgstr "Semestre Acadêmico"
 
 #. Name of a role
 #: oikonomos/oikonomos/doctype/fee_category/fee_category.json
@@ -46,7 +48,7 @@ msgstr ""
 #: oikonomos/oikonomos/doctype/student_balance/student_balance.json
 #: oikonomos/oikonomos/doctype/trigger_fee_events/trigger_fee_events.json
 msgid "Accounts Manager"
-msgstr ""
+msgstr "Gerente de Contas"
 
 #. Name of a role
 #: oikonomos/oikonomos/doctype/fee_category/fee_category.json
@@ -55,18 +57,18 @@ msgstr ""
 #: oikonomos/oikonomos/doctype/student_balance/student_balance.json
 #: oikonomos/oikonomos/doctype/trigger_fee_events/trigger_fee_events.json
 msgid "Accounts User"
-msgstr ""
+msgstr "Usuário de Contas"
 
 #: oikonomos/oikonomos/doctype/student_balance/student_balance.js:14
 msgid "Actions"
-msgstr ""
+msgstr "Ações"
 
 #. Label of the is_active (Check) field in DocType 'Scholarships'
 #. Label of the active (Check) field in DocType 'Trigger Fee Events'
 #: oikonomos/oikonomos/doctype/scholarships/scholarships.json
 #: oikonomos/oikonomos/doctype/trigger_fee_events/trigger_fee_events.json
 msgid "Active"
-msgstr ""
+msgstr "Ativo"
 
 #. Label of the pf_active (Check) field in DocType 'Payers Fee Category PE'
 #: oikonomos/oikonomos/doctype/payers_fee_category_pe/payers_fee_category_pe.json
@@ -76,7 +78,7 @@ msgstr ""
 #. Name of a report
 #: oikonomos/oikonomos/report/active_scholarships/active_scholarships.json
 msgid "Active Scholarships"
-msgstr ""
+msgstr "Bolsas Ativas"
 
 #. Name of a report
 #: oikonomos/oikonomos/report/active_scholarships_(all_types)/active_scholarships_(all_types).json
@@ -86,7 +88,7 @@ msgstr ""
 #. Name of a role
 #: oikonomos/oikonomos/doctype/scholarships/scholarships.json
 msgid "Administrator"
-msgstr ""
+msgstr "Administrador"
 
 #. Name of a report
 #: oikonomos/oikonomos/report/all_active_scholarships/all_active_scholarships.json
@@ -101,18 +103,18 @@ msgstr ""
 
 #: oikonomos/install.py:269
 msgid "Alumni"
-msgstr ""
+msgstr "Alumni"
 
 #. Label of the amended_from (Link) field in DocType 'Fee Category'
 #: oikonomos/oikonomos/doctype/fee_category/fee_category.json
 msgid "Amended From"
-msgstr ""
+msgstr "Alterado de"
 
 #. Label of the amount (Currency) field in DocType 'Instructor Log Payment'
 #: oikonomos/oikonomos/doctype/instructor_log_payment/instructor_log_payment.json
 #: oikonomos/oikonomos/doctype/student_balance/student_balance.js:68
 msgid "Amount"
-msgstr ""
+msgstr "Valor"
 
 #: oikonomos/oikonomos/doctype/student_balance/student_balance.js:87
 #: oikonomos/oikonomos/doctype/student_balance/student_balance.py:356
@@ -127,7 +129,7 @@ msgstr ""
 #. 'Scholarship Award'
 #: oikonomos/oikonomos/doctype/scholarship_award/scholarship_award.json
 msgid "Application"
-msgstr ""
+msgstr "Solicitação"
 
 #: oikonomos/financial/payment_urls.py:120
 msgid "Application Payment for {0}"
@@ -144,7 +146,7 @@ msgstr ""
 #. Label of the applied_on (Datetime) field in DocType 'Scholarship Award'
 #: oikonomos/oikonomos/doctype/scholarship_award/scholarship_award.json
 msgid "Applied On"
-msgstr ""
+msgstr "Aplicado em"
 
 #: oikonomos/oikonomos/report/unpaid_instructor_log/unpaid_instructor_log.js:8
 msgid "As of"
@@ -199,7 +201,7 @@ msgstr ""
 
 #: oikonomos/oikonomos/report/unpaid_instructor_log/unpaid_instructor_log.py:49
 msgid "Category"
-msgstr ""
+msgstr "Categoria"
 
 #. Label of the feecategory_type (Link) field in DocType 'Fee Category'
 #: oikonomos/oikonomos/doctype/fee_category/fee_category.json
@@ -215,12 +217,12 @@ msgstr ""
 #. Option for the 'Status' (Select) field in DocType 'Student Balance'
 #: oikonomos/oikonomos/doctype/student_balance/student_balance.json
 msgid "Closed"
-msgstr ""
+msgstr "Encerrada"
 
 #. Label of the company (Link) field in DocType 'Student Balance'
 #: oikonomos/oikonomos/doctype/student_balance/student_balance.json
 msgid "Company"
-msgstr ""
+msgstr "Empresa"
 
 #: oikonomos/financial/customer_person.py:237
 msgid "Contact {0} created and linked to Customer"
@@ -230,7 +232,7 @@ msgstr ""
 #: oikonomos/oikonomos/doctype/scholarships/scholarships.json
 #: oikonomos/oikonomos/report/scholarship_budget_vs_given/scholarship_budget_vs_given.py:113
 msgid "Cost Center"
-msgstr ""
+msgstr "Centro de Custo"
 
 #. Description of the 'Cost Center' (Link) field in DocType 'Scholarships'
 #: oikonomos/oikonomos/doctype/scholarships/scholarships.json
@@ -249,7 +251,7 @@ msgstr ""
 #: oikonomos/oikonomos/report/cei_marked_paid_without_payment/cei_marked_paid_without_payment.py:60
 #: oikonomos/oikonomos/report/unpaid_instructor_log/unpaid_instructor_log.py:35
 msgid "Course"
-msgstr ""
+msgstr "Curso"
 
 #: oikonomos/financial/invoice_queries.py:70
 msgid "Course: {0}"
@@ -288,17 +290,17 @@ msgstr ""
 #: oikonomos/oikonomos/doctype/instructor_log_payment/instructor_log_payment.json
 #: oikonomos/oikonomos/doctype/student_balance/student_balance.json
 msgid "Currency"
-msgstr ""
+msgstr "Moeda"
 
 #: oikonomos/oikonomos/report/students_at_scholarship_risk/students_at_scholarship_risk.py:130
 msgid "Current GPA"
-msgstr ""
+msgstr "GPA atual"
 
 #. Label of the customer (Link) field in DocType 'Student Balance'
 #: oikonomos/oikonomos/doctype/student_balance/student_balance.json
 #: oikonomos/oikonomos/report/scholarship_sales_invoices/scholarship_sales_invoices.js:20
 msgid "Customer"
-msgstr ""
+msgstr "Cliente"
 
 #. Label of the pf_custgroup (Link) field in DocType 'Payers Fee Category PE'
 #: oikonomos/oikonomos/doctype/payers_fee_category_pe/payers_fee_category_pe.json
@@ -334,7 +336,7 @@ msgstr ""
 #. Label of the description (Small Text) field in DocType 'Fee Category'
 #: oikonomos/oikonomos/doctype/fee_category/fee_category.json
 msgid "Description"
-msgstr ""
+msgstr "Descrição"
 
 #. Label of the discount_ (Percent) field in DocType 'Scholarship Discounts'
 #: oikonomos/oikonomos/doctype/scholarship_discounts/scholarship_discounts.json
@@ -355,7 +357,7 @@ msgstr ""
 #. Label of the due_date (Date) field in DocType 'Student Balance Invoice'
 #: oikonomos/oikonomos/doctype/student_balance_invoice/student_balance_invoice.json
 msgid "Due Date"
-msgstr ""
+msgstr "Data de Vencimento"
 
 #: oikonomos/oikonomos/doctype/student_balance/student_balance.py:36
 msgid "Duplicate invoice {0} in Student Balance"
@@ -364,7 +366,7 @@ msgstr ""
 #. Label of the item (Link) field in DocType 'Fee Category'
 #: oikonomos/oikonomos/doctype/fee_category/fee_category.json
 msgid "ERP Item"
-msgstr ""
+msgstr "Item no ERP"
 
 #: oikonomos/install.py:81
 msgid "ERPNext must be installed before installing Oikonomos"
@@ -379,7 +381,7 @@ msgstr ""
 #: oikonomos/oikonomos/doctype/fee_category/fee_category.json
 #: oikonomos/oikonomos/doctype/scholarship_award/scholarship_award.json
 msgid "Effective From"
-msgstr ""
+msgstr "Válido a partir de"
 
 #. Label of the effective_to (Date) field in DocType 'Scholarship Award'
 #: oikonomos/oikonomos/doctype/scholarship_award/scholarship_award.json
@@ -389,7 +391,7 @@ msgstr ""
 #. Label of the employee (Link) field in DocType 'Scholarship Award'
 #: oikonomos/oikonomos/doctype/scholarship_award/scholarship_award.json
 msgid "Employee"
-msgstr ""
+msgstr "Funcionário"
 
 #: oikonomos/financial/scholarship.py:514
 msgid "Employee {0} is {1} (not Active)."
@@ -399,7 +401,7 @@ msgstr ""
 #. Payment'
 #: oikonomos/oikonomos/doctype/instructor_log_payment/instructor_log_payment.json
 msgid "End"
-msgstr ""
+msgstr "Término"
 
 #: oikonomos/financial/scholarship.py:493
 msgid "Enrolled in {0} credits this term; {1} required."
@@ -408,7 +410,7 @@ msgstr ""
 #. Label of the pep_event (Data) field in DocType 'pgm_enroll_payers'
 #: oikonomos/oikonomos/doctype/pgm_enroll_payers/pgm_enroll_payers.json
 msgid "Event"
-msgstr ""
+msgstr "Evento"
 
 #. Label of the fc_event (Link) field in DocType 'Fee Category'
 #. Label of the pgm_feeevent (Link) field in DocType 'Program Fees'
@@ -428,7 +430,7 @@ msgstr ""
 #: oikonomos/oikonomos/doctype/scholarship_award_term/scholarship_award_term.json
 #: oikonomos/oikonomos/workspace/student_billing/student_billing.json
 msgid "Fee Category"
-msgstr ""
+msgstr "Categoria de Taxa"
 
 #: oikonomos/financial/graduation.py:168
 msgid "Fee Category {0} has no Item set; cannot generate an invoice."
@@ -452,13 +454,13 @@ msgstr ""
 
 #: oikonomos/oikonomos/report/scholarship_sales_invoices/scholarship_sales_invoices.js:8
 msgid "From Date"
-msgstr ""
+msgstr "Data Inicial"
 
 #. Option for the 'Payment Event' (Select) field in DocType 'Instructor Log
 #. Payment'
 #: oikonomos/oikonomos/doctype/instructor_log_payment/instructor_log_payment.json
 msgid "Full"
-msgstr ""
+msgstr "Completo"
 
 #. Label of the funding_section (Section Break) field in DocType 'Scholarships'
 #: oikonomos/oikonomos/doctype/scholarships/scholarships.json
@@ -517,11 +519,11 @@ msgstr ""
 #: oikonomos/oikonomos/report/unpaid_instructor_log/unpaid_instructor_log.js:14
 #: oikonomos/oikonomos/report/unpaid_instructor_log/unpaid_instructor_log.py:28
 msgid "Instructor"
-msgstr ""
+msgstr "Instrutor"
 
 #: oikonomos/oikonomos/report/unpaid_instructor_log/unpaid_instructor_log.js:26
 msgid "Instructor Category"
-msgstr ""
+msgstr "Categoria do Instrutor"
 
 #. Name of a DocType
 #. Label of a Link in the Student Billing Workspace
@@ -533,7 +535,7 @@ msgstr ""
 #. Label of the instructor_log (Link) field in DocType 'Instructor Log Payment'
 #: oikonomos/oikonomos/doctype/instructor_log_payment/instructor_log_payment.json
 msgid "Instructor Log Row"
-msgstr ""
+msgstr "Linha de registro do instrutor"
 
 #: oikonomos/oikonomos/doctype/instructor_log_payment/instructor_log_payment.py:25
 msgid "Instructor Log row {0} is already paid for event {1} (existing record: {2})."
@@ -550,7 +552,7 @@ msgstr ""
 
 #: oikonomos/oikonomos/report/cei_marked_paid_without_payment/cei_marked_paid_without_payment.py:85
 msgid "Invoiced"
-msgstr ""
+msgstr "Faturado"
 
 #. Label of the invoices_section (Section Break) field in DocType 'Student
 #. Balance'
@@ -567,7 +569,7 @@ msgstr ""
 #. Label of the is_audit (Check) field in DocType 'Fee Category'
 #: oikonomos/oikonomos/doctype/fee_category/fee_category.json
 msgid "Is Audit?"
-msgstr ""
+msgstr "Ouvinte?"
 
 #. Label of the irs_1099 (Check) field in DocType 'Supplier'
 #: oikonomos/fixtures/custom_field.json
@@ -611,7 +613,7 @@ msgstr ""
 
 #: oikonomos/oikonomos/page/program_pricing/program_pricing.js:9
 msgid "Loading…"
-msgstr ""
+msgstr "Carregando…"
 
 #: oikonomos/oikonomos/report/unpaid_instructor_log/unpaid_instructor_log.py:74
 msgid "Log Row"
@@ -656,7 +658,7 @@ msgstr ""
 
 #: oikonomos/oikonomos/report/students_at_scholarship_risk/students_at_scholarship_risk.py:137
 msgid "Min GPA"
-msgstr ""
+msgstr "GPA mín"
 
 #. Label of the retain_min_gpa (Float) field in DocType 'Scholarships'
 #: oikonomos/oikonomos/doctype/scholarships/scholarships.json
@@ -666,7 +668,7 @@ msgstr ""
 #. Label of the min_gpa (Float) field in DocType 'Scholarships'
 #: oikonomos/oikonomos/doctype/scholarships/scholarships.json
 msgid "Minimum GPA"
-msgstr ""
+msgstr "GPA Mínima"
 
 #: oikonomos/financial/scholarship.py:307
 msgid "Minimum GPA {0} required (current {1})."
@@ -710,7 +712,7 @@ msgstr ""
 #: oikonomos/oikonomos/doctype/fee_category/fee_category.json
 #: oikonomos/oikonomos/report/students_at_scholarship_risk/students_at_scholarship_risk.py:110
 msgid "Name"
-msgstr ""
+msgstr "Nome"
 
 #. Option for the 'Type' (Select) field in DocType 'Scholarships'
 #: oikonomos/oikonomos/doctype/scholarships/scholarships.json
@@ -823,12 +825,12 @@ msgstr ""
 #. Option for the 'Status' (Select) field in DocType 'Student Balance'
 #: oikonomos/oikonomos/doctype/student_balance/student_balance.json
 msgid "Open"
-msgstr ""
+msgstr "Abrir"
 
 #. Option for the 'Type' (Select) field in DocType 'Scholarships'
 #: oikonomos/oikonomos/doctype/scholarships/scholarships.json
 msgid "Other"
-msgstr ""
+msgstr "Outro"
 
 #. Label of the outstanding_amount (Currency) field in DocType 'Student Balance
 #. Invoice'
@@ -842,11 +844,11 @@ msgstr ""
 
 #: oikonomos/oikonomos/report/cei_marked_paid_without_payment/cei_marked_paid_without_payment.py:91
 msgid "Paid"
-msgstr ""
+msgstr "Pago"
 
 #: oikonomos/oikonomos/report/cei_marked_paid_without_payment/cei_marked_paid_without_payment.py:97
 msgid "Paid %"
-msgstr ""
+msgstr "Pago %"
 
 #. Option for the 'Status' (Select) field in DocType 'Student Balance'
 #: oikonomos/oikonomos/doctype/student_balance/student_balance.json
@@ -856,7 +858,7 @@ msgstr ""
 #. Label of the payer (Link) field in DocType 'pgm_enroll_payers'
 #: oikonomos/oikonomos/doctype/pgm_enroll_payers/pgm_enroll_payers.json
 msgid "Payer"
-msgstr ""
+msgstr "Pagador"
 
 #: oikonomos/oikonomos/doctype/payers_fee_category_pe/payers_fee_category_pe.py:18
 msgid "Payer shares changed. Enter a Change reason before saving (e.g. who requested the change and why)."
@@ -872,7 +874,7 @@ msgstr ""
 #: oikonomos/oikonomos/doctype/student_balance/student_balance.js:24
 #: oikonomos/oikonomos/doctype/student_balance/student_balance.js:30
 msgid "Payment"
-msgstr ""
+msgstr "Pagamento"
 
 #: oikonomos/oikonomos/doctype/student_balance/student_balance.js:112
 msgid "Payment Entry {0} created"
@@ -937,7 +939,7 @@ msgstr ""
 #. Label of the pay_percent (Percent) field in DocType 'pgm_enroll_payers'
 #: oikonomos/oikonomos/doctype/pgm_enroll_payers/pgm_enroll_payers.json
 msgid "Percentage"
-msgstr ""
+msgstr "Percentagem"
 
 #: oikonomos/oikonomos/report/scholarship_budget_vs_given/scholarship_budget_vs_given.py:120
 msgid "Period"
@@ -958,7 +960,7 @@ msgstr ""
 #. Label of the portion (Percent) field in DocType 'Instructor Log Payment'
 #: oikonomos/oikonomos/doctype/instructor_log_payment/instructor_log_payment.json
 msgid "Portion"
-msgstr ""
+msgstr "Porção"
 
 #. Label of the posting_date (Date) field in DocType 'Instructor Log Payment'
 #. Label of the posting_date (Date) field in DocType 'Student Balance'
@@ -976,7 +978,7 @@ msgstr ""
 
 #: oikonomos/oikonomos/page/program_pricing/program_pricing.js:13
 msgid "Print"
-msgstr ""
+msgstr "Impressão"
 
 #. Label of the program (Link) field in DocType 'Program Fees'
 #. Label of the program (Link) field in DocType 'Scholarship Award'
@@ -988,21 +990,21 @@ msgstr ""
 #: oikonomos/oikonomos/report/cei_marked_paid_without_payment/cei_marked_paid_without_payment.py:66
 #: oikonomos/oikonomos/report/students_at_scholarship_risk/students_at_scholarship_risk.py:116
 msgid "Program"
-msgstr ""
+msgstr "Programa"
 
 #. Name of a role
 #: oikonomos/oikonomos/doctype/fee_category/fee_category.json
 #: oikonomos/oikonomos/doctype/program_fees/program_fees.json
 #: oikonomos/oikonomos/doctype/trigger_fee_events/trigger_fee_events.json
 msgid "Program Chair"
-msgstr ""
+msgstr "Coordenador do Programa"
 
 #. Label of the pf_pe (Link) field in DocType 'Payers Fee Category PE'
 #. Label of the program_enrollment (Link) field in DocType 'Scholarship Award'
 #: oikonomos/oikonomos/doctype/payers_fee_category_pe/payers_fee_category_pe.json
 #: oikonomos/oikonomos/doctype/scholarship_award/scholarship_award.json
 msgid "Program Enrollment"
-msgstr ""
+msgstr "Matrícula no Programa"
 
 #. Label of the si_created (Check) field in DocType 'Payers Fee Category PE'
 #: oikonomos/oikonomos/doctype/payers_fee_category_pe/payers_fee_category_pe.json
@@ -1011,7 +1013,7 @@ msgstr ""
 
 #: oikonomos/financial/scholarship.py:346
 msgid "Program Enrollment is not active."
-msgstr ""
+msgstr "A matrícula do programa não está ativa."
 
 #: oikonomos/financial/backend.py:427
 msgid "Program Enrollment — {0}"
@@ -1076,7 +1078,7 @@ msgstr ""
 #: oikonomos/oikonomos/custom/sales_invoice.json
 #: oikonomos/oikonomos/doctype/student_balance_invoice/student_balance_invoice.json
 msgid "Reference"
-msgstr ""
+msgstr "Referência"
 
 #. Description of the 'Trigger' (Data) field in DocType 'Trigger Fee Events'
 #: oikonomos/oikonomos/doctype/trigger_fee_events/trigger_fee_events.json
@@ -1099,11 +1101,11 @@ msgstr ""
 #: oikonomos/oikonomos/doctype/scholarship_award/scholarship_award.json
 #: oikonomos/oikonomos/doctype/scholarships/scholarships.json
 msgid "Registrar"
-msgstr ""
+msgstr "Secretaria"
 
 #: oikonomos/oikonomos/report/scholarship_budget_vs_given/scholarship_budget_vs_given.py:150
 msgid "Remaining"
-msgstr ""
+msgstr "Restante"
 
 #: oikonomos/oikonomos/report/scholarship_budget_vs_given/scholarship_budget_vs_given.py:138
 msgid "Requested"
@@ -1189,7 +1191,7 @@ msgstr ""
 #. Label of the sales_invoice (Link) field in DocType 'Student Balance Invoice'
 #: oikonomos/oikonomos/doctype/student_balance_invoice/student_balance_invoice.json
 msgid "Sales Invoice"
-msgstr ""
+msgstr "Fatura de Vendas"
 
 #. Label of the scholarship (Link) field in DocType 'Scholarship Award'
 #. Label of the scholarship (Data) field in DocType 'Scholarships'
@@ -1197,7 +1199,7 @@ msgstr ""
 #: oikonomos/oikonomos/doctype/scholarships/scholarships.json
 #: oikonomos/oikonomos/report/students_at_scholarship_risk/students_at_scholarship_risk.py:123
 msgid "Scholarship"
-msgstr ""
+msgstr "Bolsa de Estudos"
 
 #. Name of a DocType
 #. Label of a Link in the Student Billing Workspace
@@ -1232,7 +1234,7 @@ msgstr ""
 
 #: oikonomos/financial/scholarship.py:328
 msgid "Scholarship applications are not enabled."
-msgstr ""
+msgstr "Inscrições para bolsas não estão habilitadas."
 
 #: oikonomos/financial/scholarship.py:440
 msgid "Scholarship at risk: {0}"
@@ -1254,7 +1256,7 @@ msgstr ""
 #: oikonomos/oikonomos/doctype/scholarships/scholarships.json
 #: oikonomos/oikonomos/workspace/student_billing/student_billing.json
 msgid "Scholarships"
-msgstr ""
+msgstr "Bolsas de Estudos"
 
 #. Description of the 'Is Academic Credit?' (Check) field in DocType 'Fee
 #. Category'
@@ -1270,7 +1272,7 @@ msgstr ""
 #: oikonomos/oikonomos/doctype/scholarship_award/scholarship_award.json
 #: oikonomos/oikonomos/doctype/scholarships/scholarships.json
 msgid "Seminary Manager"
-msgstr ""
+msgstr "Gestor do Seminário"
 
 #: oikonomos/oikonomos/doctype/fee_category/fee_category.py:33
 msgid "Seminary Settings are currently set to charge audit as a flat fee, not per credit. Either uncheck Is Credit here, or change Seminary Settings to allow audit per credit."
@@ -1283,7 +1285,7 @@ msgstr ""
 #. Label of the naming_series (Select) field in DocType 'Student Balance'
 #: oikonomos/oikonomos/doctype/student_balance/student_balance.json
 msgid "Series"
-msgstr ""
+msgstr "Séries"
 
 #: oikonomos/install.py:94
 msgid "Setup Incomplete"
@@ -1308,20 +1310,20 @@ msgstr ""
 #. Option for the 'Type' (Select) field in DocType 'Scholarships'
 #: oikonomos/oikonomos/doctype/scholarships/scholarships.json
 msgid "Staff"
-msgstr ""
+msgstr "Equipe"
 
 #. Option for the 'Payment Event' (Select) field in DocType 'Instructor Log
 #. Payment'
 #: oikonomos/oikonomos/doctype/instructor_log_payment/instructor_log_payment.json
 msgid "Start"
-msgstr ""
+msgstr "Iniciar"
 
 #. Label of the status_section (Section Break) field in DocType 'Student
 #. Balance'
 #. Label of the status (Select) field in DocType 'Student Balance'
 #: oikonomos/oikonomos/doctype/student_balance/student_balance.json
 msgid "Status"
-msgstr ""
+msgstr "Status"
 
 #. Label of the custom_student (Link) field in DocType 'Sales Invoice'
 #. Label of the pf_student (Data) field in DocType 'Payers Fee Category PE'
@@ -1337,7 +1339,7 @@ msgstr ""
 #: oikonomos/oikonomos/report/cei_marked_paid_without_payment/cei_marked_paid_without_payment.py:53
 #: oikonomos/oikonomos/report/students_at_scholarship_risk/students_at_scholarship_risk.py:103
 msgid "Student"
-msgstr ""
+msgstr "Estudante"
 
 #. Name of a DocType
 #. Label of a Link in the Student Billing Workspace
@@ -1368,7 +1370,7 @@ msgstr ""
 #. Label of the student_comment (Text) field in DocType 'Scholarship Award'
 #: oikonomos/oikonomos/doctype/scholarship_award/scholarship_award.json
 msgid "Student Comment"
-msgstr ""
+msgstr "Comentário do Aluno"
 
 #. Label of the stu_link (Link) field in DocType 'Payers Fee Category PE'
 #: oikonomos/oikonomos/doctype/payers_fee_category_pe/payers_fee_category_pe.json
@@ -1378,7 +1380,7 @@ msgstr ""
 #. Label of the student_name (Data) field in DocType 'Scholarship Award'
 #: oikonomos/oikonomos/doctype/scholarship_award/scholarship_award.json
 msgid "Student Name"
-msgstr ""
+msgstr "Nome do Estudante"
 
 #. Name of a report
 #. Label of a Link in the Student Billing Workspace
@@ -1398,7 +1400,7 @@ msgstr ""
 
 #: oikonomos/oikonomos/report/unpaid_instructor_log/unpaid_instructor_log.py:56
 msgid "Students"
-msgstr ""
+msgstr "Estudantes"
 
 #. Name of a report
 #. Label of a Link in the Student Billing Workspace
@@ -1414,7 +1416,7 @@ msgstr ""
 #: oikonomos/oikonomos/doctype/student_balance/student_balance.json
 #: oikonomos/oikonomos/doctype/trigger_fee_events/trigger_fee_events.json
 msgid "System Manager"
-msgstr ""
+msgstr "Gerente de Sistema"
 
 #: oikonomos/oikonomos/report/unpaid_instructor_log/unpaid_instructor_log.py:62
 msgid "Term End"
@@ -1447,7 +1449,7 @@ msgstr ""
 
 #: oikonomos/oikonomos/report/scholarship_sales_invoices/scholarship_sales_invoices.js:14
 msgid "To Date"
-msgstr ""
+msgstr "Até a data"
 
 #. Label of the total_credits (Currency) field in DocType 'Student Balance'
 #: oikonomos/oikonomos/doctype/student_balance/student_balance.json
@@ -1457,12 +1459,12 @@ msgstr ""
 #. Label of the total_invoiced (Currency) field in DocType 'Student Balance'
 #: oikonomos/oikonomos/doctype/student_balance/student_balance.json
 msgid "Total Invoiced"
-msgstr ""
+msgstr "Total faturado"
 
 #. Label of the total_paid (Currency) field in DocType 'Student Balance'
 #: oikonomos/oikonomos/doctype/student_balance/student_balance.json
 msgid "Total Paid"
-msgstr ""
+msgstr "Total pago"
 
 #. Label of the totals_section (Section Break) field in DocType 'Student
 #. Balance'
@@ -1487,7 +1489,7 @@ msgstr ""
 #: oikonomos/oikonomos/doctype/scholarship_award/scholarship_award.json
 #: oikonomos/oikonomos/doctype/scholarships/scholarships.json
 msgid "Type"
-msgstr ""
+msgstr "Tipo"
 
 #. Description of a DocType
 #: oikonomos/oikonomos/doctype/fee_category/fee_category.json
@@ -1498,7 +1500,7 @@ msgstr ""
 #. Award'
 #: oikonomos/oikonomos/doctype/scholarship_award/scholarship_award.json
 msgid "Under Review"
-msgstr ""
+msgstr "Em análise"
 
 #. Name of a report
 #. Label of a Link in the Student Billing Workspace
@@ -1512,7 +1514,7 @@ msgstr ""
 #: oikonomos/oikonomos/doctype/scholarship_award_term/scholarship_award_term.json
 #: oikonomos/oikonomos/doctype/scholarship_discounts/scholarship_discounts.json
 msgid "Value"
-msgstr ""
+msgstr "Valor"
 
 #. Description of the 'Active' (Check) field in DocType 'Scholarships'
 #: oikonomos/oikonomos/doctype/scholarships/scholarships.json
@@ -1527,7 +1529,7 @@ msgstr ""
 #. Label of the workflow_state (Link) field in DocType 'Scholarship Award'
 #: oikonomos/oikonomos/doctype/scholarship_award/scholarship_award.json
 msgid "Workflow State"
-msgstr ""
+msgstr "Estado do Fluxo de Trabalho"
 
 #: oikonomos/financial/scholarship.py:358
 msgid "You already have an active or pending scholarship on this enrollment."
