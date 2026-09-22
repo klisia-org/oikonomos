@@ -207,6 +207,17 @@ doc_events = {
     "Student Applicant": {
         "after_insert": "oikonomos.financial.application.on_applicant_insert",
     },
+    # Person<->Customer mirror teardown. Both halves are read-only custom fields,
+    # so without these on_trash handlers neither side is deletable and there is no
+    # manual escape. Frappe runs on_trash before its link check, so clearing here
+    # is what lets the delete through (ADR 042 addendum, 2026-09-22).
+    "Customer": {
+        "on_update": "oikonomos.financial.customer_person.on_customer_update",
+        "on_trash": "oikonomos.financial.customer_person.on_customer_trash",
+    },
+    "Person": {
+        "on_trash": "oikonomos.financial.customer_person.on_person_trash",
+    },
     # Student Balance lifecycle (doctype relocated from seminary). A balance is
     # opened for every Student and tracks their submitted Sales Invoices.
     "Student": {
