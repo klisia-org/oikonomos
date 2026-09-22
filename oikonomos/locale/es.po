@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: support@seminaryerp.org\n"
 "POT-Creation-Date: 2026-09-21 17:41-0609\n"
 "PO-Revision-Date: 2026-09-22 03:00+0000\n"
-"Last-Translator: OpenAI <noreply-mt-openai@weblate.org>\n"
+"Last-Translator: Murilo Melo <murilomelo@gmail.com>\n"
 "Language-Team: Spanish <https://translate.seminaryerp.org/projects/klisia/"
 "oikonomos/es/>\n"
 "MIME-Version: 1.0\n"
@@ -108,7 +108,7 @@ msgstr "Alumni"
 #. Label of the amended_from (Link) field in DocType 'Fee Category'
 #: oikonomos/oikonomos/doctype/fee_category/fee_category.json
 msgid "Amended From"
-msgstr "Desde"
+msgstr "Modificado desde"
 
 #. Label of the amount (Currency) field in DocType 'Instructor Log Payment'
 #: oikonomos/oikonomos/doctype/instructor_log_payment/instructor_log_payment.json
@@ -681,7 +681,7 @@ msgstr "Créditos mínimos por período"
 
 #: oikonomos/oikonomos/report/students_at_scholarship_risk/students_at_scholarship_risk.py:137
 msgid "Min GPA"
-msgstr "GPA mínimo"
+msgstr "Promedio mínimo"
 
 #. Label of the retain_min_gpa (Float) field in DocType 'Scholarships'
 #: oikonomos/oikonomos/doctype/scholarships/scholarships.json
@@ -1519,7 +1519,7 @@ msgstr "Estudiantes en riesgo de perder la beca"
 #: oikonomos/oikonomos/doctype/student_balance/student_balance.json
 #: oikonomos/oikonomos/doctype/trigger_fee_events/trigger_fee_events.json
 msgid "System Manager"
-msgstr "Gestor del sistema"
+msgstr "Administrador del sistema"
 
 #: oikonomos/oikonomos/report/unpaid_instructor_log/unpaid_instructor_log.py:62
 msgid "Term End"
