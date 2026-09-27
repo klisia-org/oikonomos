@@ -138,6 +138,14 @@ class OikonomosFinancialBackend(FinancialBackend):
             return frappe.db.get_value("Company", company, "country")
         return None
 
+    def can_regenerate_current_term_charges(self) -> bool:
+        return True
+
+    def regenerate_current_term_charges(self) -> dict:
+        from oikonomos.financial.invoicing import regenerate_current_term_invoices
+
+        return regenerate_current_term_invoices()
+
     def company_holiday_dates(self) -> set:
         company = frappe.db.get_single_value("Seminary Settings", "company")
         if not company:
