@@ -57,6 +57,10 @@ def after_migrate():
     except ImportError:  # Frappe without workspace sidebars
         return
     auto_generate_icons_and_sidebar()
+    # With tamias also installed, show only the active billing app's icon.
+    from seminary.seminary.financial.desk import sync_billing_entry
+
+    sync_billing_entry()
 
 
 def _seed():

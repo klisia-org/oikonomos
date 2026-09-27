@@ -14,7 +14,8 @@ Owns:
 - Customer lifecycle: create/update the Student's Customer + Contact on
   Student.on_update (relocated from the Student controller).
 - link_customer(): first-link-wins mirror between Person.customer and
-  Customer.person.
+  Customer.person, and the on_trash handlers that drop the opposite half so
+  either side can actually be deleted (ADR 042 addendum, 2026-09-22).
 
 With oikonomos absent, none of this exists and Students are purely academic.
 """
@@ -237,3 +238,49 @@ def _create_contact(doc, customer_name):
         _("Contact {0} created and linked to Customer").format(contact.name),
         alert=True,
     )
+
+
+def on_customer_update(doc, method=None):
+    """Clear a stale Person.customer when a Customer is re-pointed to a different
+    Person. Mirrors seminary's on_donor_update guard; cheap no-op on every other
+    Customer save."""
+    if not frappe.db.has_column("Person", "customer"):
+        return
+    before = doc.get_doc_before_save()
+    old_person = before.get("person") if before else None
+    if not old_person or old_person == doc.get("person"):
+        return
+    if frappe.db.get_value("Person", old_person, "customer") == doc.name:
+        frappe.db.set_value(
+            "Person", old_person, "customer", None, update_modified=False
+        )
+    if doc.get("person"):
+        link_customer(doc.person, doc.name)
+
+
+def on_customer_trash(doc, method=None):
+    """Drop the Person.customer half of the mirror when its Customer is deleted.
+
+    Frappe runs on_trash before check_if_doc_is_linked, so clearing here is what
+    lets the delete through at all -- the field is read-only, leaving no manual
+    escape. Reverse lookup rather than doc.person: first-link-wins applies to each
+    half independently, so a Person may point here while this Customer points
+    elsewhere or nowhere. Student.customer / Student Applicant.customer are
+    billing identity, not a mirror, and deliberately stay put -- a Customer owned
+    by a Student remains undeletable (ADR 042 addendum, 2026-09-22)."""
+    if not frappe.db.has_column("Person", "customer"):
+        return
+    stale = frappe.get_all("Person", filters={"customer": doc.name}, pluck="name")
+    for person in stale:
+        frappe.db.set_value("Person", person, "customer", None, update_modified=False)
+
+
+def on_person_trash(doc, method=None):
+    """Drop the Customer.person half of the mirror when its Person is deleted.
+    The Customer itself survives: it is a billing identity ERPNext owns, and
+    seminary's academic spine going away is no reason to lose the ledger."""
+    if not frappe.db.has_column("Customer", "person"):
+        return
+    stale = frappe.get_all("Customer", filters={"person": doc.name}, pluck="name")
+    for customer in stale:
+        frappe.db.set_value("Customer", customer, "person", None, update_modified=False)
