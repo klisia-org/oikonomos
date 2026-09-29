@@ -34,6 +34,11 @@ class OikonomosFinancialBackend(FinancialBackend):
     def generate_enrollment_invoice(self, cei_doc) -> int:
         return _generate_enrollment_invoice(cei_doc)
 
+    def preview_enrollment_charges(
+        self, pe_name: str, course_schedule: str, credits: float, audit: bool = False
+    ) -> list:
+        return _preview_enrollment_charges(pe_name, credits, audit)
+
     def generate_program_enrollment_invoices(self, pfc_doc) -> dict:
         return _generate_program_enrollment_invoices(pfc_doc)
 
@@ -199,6 +204,43 @@ def prepare_enrollment_payers(doc, method=None):
     from oikonomos.financial.payers import get_payers
 
     get_payers(doc, method)
+
+
+def _preview_enrollment_charges(pe_name, credits, audit) -> list:
+    """What a course enrollment would invoice, before scholarships, using the
+    same payer rows, Item Price and quantity rule as _generate_enrollment_invoice.
+    Raises nothing (seminary decision 083 §1)."""
+    audit = 1 if audit else 0
+    audithours = frappe.db.get_single_value("Seminary Settings", "auditcredit")
+    rows = frappe.db.sql(
+        """select pep.payer, pep.fee_category, pep.pay_percent, fc.is_credit, ip.price_list_rate
+		from `tabPayers Fee Category PE` pfc
+		inner join `tabpgm_enroll_payers` pep on pep.parent = pfc.name
+		inner join `tabFee Category` fc on fc.name = pep.fee_category
+		left join `tabCustomer Group` cg on cg.customer_group_name = pfc.pf_custgroup
+		left join `tabItem Price` ip on ip.price_list = cg.default_price_list and ip.item_code = fc.item
+		where pfc.pf_pe = %s and fc.is_audit = %s and pep.pep_event = 'Course Enrollment'""",
+        (pe_name, audit),
+        as_dict=True,
+    )
+    out = []
+    for r in rows:
+        share = (r.pay_percent or 0) / 100
+        if r.is_credit == 1 or (audit and audithours == 1):
+            qty = (credits or 0) * share
+        else:
+            qty = share
+        rate = r.price_list_rate
+        out.append(
+            {
+                "payer": r.payer,
+                "fee": r.fee_category,
+                "qty": qty,
+                "rate": rate,
+                "amount": round(qty * rate, 2) if rate is not None else None,
+            }
+        )
+    return out
 
 
 def _generate_enrollment_invoice(cei_doc) -> int:
