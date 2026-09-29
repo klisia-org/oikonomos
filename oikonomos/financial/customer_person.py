@@ -186,9 +186,11 @@ def on_student_update(doc, method=None):
 def _set_customer_group(doc):
     if frappe.flags.in_demo_install:
         return
-    if not doc.get("customer_group"):
-        doc.customer_group = _("Student")
-        frappe.db.set_value("Student", doc.name, "customer_group", _("Student"))
+    # A record name, not a label: install seeds the untranslated "Student", and
+    # _() here resolved to e.g. "Estudante" on a pt site -> LinkValidationError.
+    if not doc.get("customer_group") and frappe.db.exists("Customer Group", "Student"):
+        doc.customer_group = "Student"
+        frappe.db.set_value("Student", doc.name, "customer_group", "Student")
 
 
 def _create_customer(doc):

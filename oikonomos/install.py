@@ -102,7 +102,6 @@ def check_erpnext():
 def setup_erpnext_groups():
     """Create the ERPNext groups seminary billing relies on (relocated from
     seminary.install.setup_fixtures). Idempotent via make_records."""
-    from frappe import _
     from frappe.desk.page.setup_wizard.setup_wizard import make_records
 
     default_price_list = frappe.db.get_value(
@@ -129,9 +128,9 @@ def setup_erpnext_groups():
         for g in customer_groups
     ]
     records += [
-        {"doctype": "UOM", "uom_name": _("Academic Event"), "must_be_whole_number": 0},
-        {"doctype": "UOM", "uom_name": _("Credit hour"), "must_be_whole_number": 0},
-        {"doctype": "Supplier Group", "supplier_group_name": _("Instructor")},
+        {"doctype": "UOM", "uom_name": "Academic Event", "must_be_whole_number": 0},
+        {"doctype": "UOM", "uom_name": "Credit hour", "must_be_whole_number": 0},
+        {"doctype": "Supplier Group", "supplier_group_name": "Instructor"},
     ]
     make_records(records)
 
@@ -265,12 +264,11 @@ def setup_sales_invoice_permissions():
 
     Row-level access is scoped to the user's own linked Student record by
     oikonomos.financial.sales_invoice_permissions. Idempotent."""
-    from frappe import _
     from frappe.permissions import add_permission, update_permission_property
 
     if not frappe.db.exists("DocType", "Sales Invoice"):
         return
-    for role in (_("Student"), _("Alumni")):
+    for role in ("Student", "Alumni"):
         if not frappe.db.exists("Role", role):
             continue
         add_permission("Sales Invoice", role, 0)
