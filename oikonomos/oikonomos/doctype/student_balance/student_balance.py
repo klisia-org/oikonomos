@@ -134,16 +134,24 @@ class StudentBalance(Document):
             else flt(self.net_outstanding)
         )
 
-        pe = self.create_payment_entry(payment_account=None, amount=pr_amount)
+        # The gateway calls this as the payer, who cannot read the receivable
+        # account ERPNext checks in get_party_account; the money is already
+        # confirmed, so the posting is the system's, not the student's
+        user = frappe.session.user
+        frappe.set_user("Administrator")
+        try:
+            self.create_payment_entry(payment_account=None, amount=pr_amount)
 
-        # Refresh outstanding from the now-updated invoices
-        self.refresh_outstanding()
+            # Refresh outstanding from the now-updated invoices
+            self.refresh_outstanding()
 
-        # close_and_rotate was already called by refresh_outstanding if
-        # net_outstanding hit 0.  If it's still open (partial payment),
-        # close it with "Partially Paid".
-        if self.is_open:
-            self.close_and_rotate(status="Partially Paid")
+            # close_and_rotate was already called by refresh_outstanding if
+            # net_outstanding hit 0.  If it's still open (partial payment),
+            # close it with "Partially Paid".
+            if self.is_open:
+                self.close_and_rotate(status="Partially Paid")
+        finally:
+            frappe.set_user(user)
 
         return "/seminary/fees?payment=success"
 
