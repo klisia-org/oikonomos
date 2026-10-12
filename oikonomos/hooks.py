@@ -75,6 +75,7 @@ fixtures = [
 # oikonomos-owned billing fields of the seminary's Seminary Settings.
 doctype_js = {
     "Seminary Settings": "public/js/seminary_settings.js",
+    "Instructor": "public/js/instructor.js",
     "Customer": "public/js/customer.js",
     "Item Price": "public/js/item_price.js",
 }
@@ -265,7 +266,26 @@ doc_events = {
     },
     # Provision payroll custom fields when instructor payroll is toggled on.
     "Seminary Settings": {
-        "on_update": "oikonomos.financial.salary_slip.on_seminary_settings_update",
+        "on_update": [
+            "oikonomos.financial.salary_slip.on_seminary_settings_update",
+            "oikonomos.financial.locations.on_seminary_settings_update",
+        ],
+    },
+    # Campus/Building/Room → ERPNext Location mirror (seminary ADR 039).
+    "Campus": {
+        "on_update": "oikonomos.financial.locations.on_facility_update",
+        "on_trash": "oikonomos.financial.locations.on_facility_trash",
+    },
+    "Building": {
+        "on_update": "oikonomos.financial.locations.on_facility_update",
+        "on_trash": "oikonomos.financial.locations.on_facility_trash",
+    },
+    "Room": {
+        "on_update": "oikonomos.financial.locations.on_facility_update",
+        "on_trash": "oikonomos.financial.locations.on_facility_trash",
+    },
+    "Instructor": {
+        "validate": "oikonomos.financial.instructor.validate",
     },
 }
 
