@@ -24,6 +24,11 @@ def before_install():
 def after_install():
     setup_erpnext_groups()
     ensure_custom_fields()
+    # Adopting billing on a seminary that already has facilities: mirror them
+    # (no-op while the sync toggle is off).
+    from oikonomos.financial import locations
+
+    locations.backfill()
 
 
 def after_sync():
@@ -175,6 +180,40 @@ SALES_INVOICE_CUSTOM_FIELDS = {
 }
 
 
+# Partners that are also billed (sponsorship, placement fee) link a Customer.
+PARTNER_CUSTOM_FIELDS = {
+    "Partner Organization": [
+        {
+            "fieldname": "links_section",
+            "fieldtype": "Section Break",
+            "label": "System Links",
+            "insert_after": "doctrinal_statement",
+        },
+        {
+            "fieldname": "customer",
+            "fieldtype": "Link",
+            "label": "Customer",
+            "options": "Customer",
+            "insert_after": "links_section",
+            "description": "Optional. Link a Customer only when this partner is "
+            "also billed (sponsorship, placement fee). Leave blank for a pure "
+            "relationship — we never auto-create a Customer.",
+        },
+    ],
+    "Partner Seminary": [
+        {
+            "fieldname": "customer",
+            "fieldtype": "Link",
+            "label": "Customer",
+            "options": "Customer",
+            "insert_after": "country",
+            "description": "Optional link to a Customer record for registering "
+            "contacts and other partner-institution information.",
+        },
+    ],
+}
+
+
 # Seminary Settings financial/asset config. These Link ERPNext doctypes
 # (Company/Account/Cost Center/Customer/Location/Payment Gateway), so they live in
 # the bridge and are absent on a Frappe-only install. Intentionally NOT mandatory
@@ -287,7 +326,17 @@ def ensure_custom_fields():
     # Flag the billing bridge as present so seminary's gated billing fields/UI show.
     frappe.db.set_single_value("Seminary Settings", "has_oikonomos", 1)
     create_custom_fields(SALES_INVOICE_CUSTOM_FIELDS, ignore_validate=True)
+    # Before the Seminary Settings fields: root_asset_location sits after the
+    # sync toggle these create.
+    from oikonomos.financial import locations
+
+    locations.setup_custom_fields()
     create_custom_fields(SEMINARY_SETTINGS_CUSTOM_FIELDS, ignore_validate=True)
+    create_custom_fields(PARTNER_CUSTOM_FIELDS, ignore_validate=True)
+    # Instructor Employee/Supplier links.
+    from oikonomos.financial.instructor import setup_custom_fields as setup_instructor
+
+    setup_instructor()
     # Customer<->Person link + Student billing-identity fields.
     from oikonomos.financial.customer_person import setup_custom_fields as setup_cp
 
