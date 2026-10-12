@@ -165,6 +165,35 @@ class OikonomosFinancialBackend(FinancialBackend):
         )
         return {frappe.utils.getdate(d) for d in dates if d}
 
+    def fiscal_year(self, on_date=None):
+        """The ERPNext Fiscal Year containing `on_date` (p020)."""
+        from erpnext.accounts.utils import FiscalYearError, get_fiscal_year
+
+        try:
+            fy = get_fiscal_year(on_date or frappe.utils.today())
+        except FiscalYearError:
+            return super().fiscal_year(on_date)
+        return frappe.utils.getdate(fy[1]), frappe.utils.getdate(fy[2])
+
+    def tuition_revenue(self, start, end) -> dict:
+        """Students' submitted invoices, returns included (p020). The
+        scholarship customer's forgiveness invoices mirror the discount on the
+        student's own invoice, so they are left out."""
+        scholarship_customer = frappe.db.get_single_value("Seminary Settings", "scholarship_cust") or ""
+        gross, aid = frappe.db.sql(
+            """SELECT COALESCE(SUM(base_total), 0), COALESCE(SUM(base_discount_amount), 0)
+               FROM `tabSales Invoice`
+               WHERE docstatus = 1 AND IFNULL(custom_student, '') != '' AND customer != %s
+                 AND posting_date BETWEEN %s AND %s""",
+            (scholarship_customer, start, end),
+        )[0]
+        since = frappe.db.sql(
+            """SELECT MIN(posting_date) FROM `tabSales Invoice`
+               WHERE docstatus = 1 AND IFNULL(custom_student, '') != '' AND customer != %s""",
+            (scholarship_customer,),
+        )[0][0]
+        return {"gross": flt(gross), "scholarships": flt(aid), "since": since}
+
 
 # ---------------------------------------------------------------------------
 # Course-enrollment billing engine (relocated from the seminary CEI controller's
