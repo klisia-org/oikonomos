@@ -1,0 +1,19 @@
+{
+ "doctype": "Dock",
+ "name": "oikonomos",
+ "app": "oikonomos",
+ "user": "",
+ "standard": 1,
+ "mount_on": "seminary",
+ "modified": "2026-10-15 16:00:00.000000",
+ "items": [
+  {
+   "added": 0,
+   "hidden": 0,
+   "icon": "wallet",
+   "link_to": "Student Billing",
+   "link_type": "Sidebar",
+   "title": "Billing"
+  }
+ ]
+}

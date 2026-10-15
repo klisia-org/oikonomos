@@ -25,6 +25,9 @@ class OikonomosFinancialBackend(FinancialBackend):
     def has_financials(self) -> bool:
         return True
 
+    def setup_route(self) -> str | None:
+        return "/desk/fee-category"
+
     def payment_status_for_cei(self, cei_name: str) -> PaymentAggregate:
         return _aggregate_invoices("custom_cei", cei_name)
 
