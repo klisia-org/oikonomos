@@ -68,3 +68,14 @@ class UnitTestDeskNavigation(UnitTestCase):
 			self.assertTrue(spec["section"])
 			for link in spec["links"]:
 				self.assertIn(link["link_to"], known, link["label"])
+
+	def test_each_workspace_has_one_sidebar(self):
+		# A workspace route opens the sidebar that lists it, so a workspace listed twice pulls
+		# the user out of the area they clicked (seminary 088a §1).
+		listed = [
+			item["link_to"]
+			for path in (PACKAGE / "oikonomos" / "sidebar").glob("*/*.json")
+			for item in _load(path)["items"]
+			if item["type"] == "Link" and item["link_type"] == "Workspace"
+		]
+		self.assertEqual(sorted({w for w in listed if listed.count(w) > 1}), [])
