@@ -1,7 +1,7 @@
 # Copyright (c) 2026, Klisia / SeminaryERP and contributors
 # For license information, please see license.txt
 
-"""Desk navigation (seminary decision 088): the dock mounts on seminary and its sidebar opens
+"""Desk navigation (seminary decisions 088, 088a): the dock mounts on seminary and its sidebars open
 only objects this app, ERPNext or Seminary own."""
 
 import json
@@ -58,3 +58,13 @@ class UnitTestDeskNavigation(UnitTestCase):
 			if report.get("doctype") == "Report":
 				ref = report["ref_doctype"]
 				self.assertFalse(frappe.db.get_value("DocType", ref, "istable"), f"{report['name']} -> {ref}")
+
+	def test_setup_sections_open_objects_we_ship(self):
+		from oikonomos import hooks
+
+		known = _names("DocType", "doctype")
+		self.assertTrue(hooks.seminary_setup_sections)
+		for spec in hooks.seminary_setup_sections:
+			self.assertTrue(spec["section"])
+			for link in spec["links"]:
+				self.assertIn(link["link_to"], known, link["label"])

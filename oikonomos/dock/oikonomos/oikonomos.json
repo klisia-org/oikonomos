@@ -5,8 +5,15 @@
  "user": "",
  "standard": 1,
  "mount_on": "seminary",
- "modified": "2026-10-15 16:00:00.000000",
  "items": [
+  {
+   "added": 0,
+   "hidden": 0,
+   "icon": "gift",
+   "link_to": "Student Scholarships",
+   "link_type": "Sidebar",
+   "title": "Scholarships"
+  },
   {
    "added": 0,
    "hidden": 0,
@@ -15,5 +22,6 @@
    "link_type": "Sidebar",
    "title": "Billing"
   }
- ]
+ ],
+ "modified": "2026-10-17 12:00:00.000000"
 }
