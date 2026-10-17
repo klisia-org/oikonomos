@@ -1,0 +1,27 @@
+{
+ "doctype": "Dock",
+ "name": "oikonomos",
+ "app": "oikonomos",
+ "user": "",
+ "standard": 1,
+ "mount_on": "seminary",
+ "items": [
+  {
+   "added": 0,
+   "hidden": 0,
+   "icon": "gift",
+   "link_to": "Student Scholarships",
+   "link_type": "Sidebar",
+   "title": "Scholarships"
+  },
+  {
+   "added": 0,
+   "hidden": 0,
+   "icon": "wallet",
+   "link_to": "Student Billing",
+   "link_type": "Sidebar",
+   "title": "Billing"
+  }
+ ],
+ "modified": "2026-10-17 18:00:00.000000"
+}

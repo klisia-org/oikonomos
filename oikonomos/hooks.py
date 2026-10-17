@@ -432,3 +432,27 @@ scheduler_events = {
 # List of apps whose translatable strings should be excluded from this app's translations.
 # ignore_translatable_strings_from = []
 
+
+# Fee setup sits in Seminary's Setup sidebar while oikonomos is the active billing app
+# (seminary decision 088a §4).
+seminary_setup_sections = [
+    {
+        "section": "Fees setup",
+        "after": "Community setup",
+        "icon": "receipt",
+        "links": [
+            {"label": "Fee Category", "link_type": "DocType", "link_to": "Fee Category"},
+            {"label": "Program Fees", "link_type": "DocType", "link_to": "Program Fees"},
+            {"label": "Company", "link_type": "DocType", "link_to": "Company"},
+            {"label": "Fiscal Year", "link_type": "DocType", "link_to": "Fiscal Year"},
+            {"label": "Item", "link_type": "DocType", "link_to": "Item"},
+            {
+                "label": "Payment Terms Template",
+                "link_type": "DocType",
+                "link_to": "Payment Terms Template",
+            },
+            {"label": "Mode of Payment", "link_type": "DocType", "link_to": "Mode of Payment"},
+            {"label": "Accounts Settings", "link_type": "DocType", "link_to": "Accounts Settings"},
+        ],
+    }
+]
