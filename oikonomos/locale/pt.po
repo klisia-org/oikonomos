@@ -12,11 +12,11 @@ msgstr ""
 "Last-Translator: OpenAI <noreply-mt-openai@weblate.org>\n"
 "Language-Team: Portuguese <https://translate.seminaryerp.org/projects/klisia/"
 "oikonomos/pt/>\n"
+"Language: pt\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.16.0\n"
-"Language: pt\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 2026.9.1\n"
 
@@ -122,7 +122,9 @@ msgid "Amount must be between 0 and {0}."
 msgstr "O montante tem de estar entre 0 e {0}."
 
 #: oikonomos/oikonomos/doctype/scholarship_award/scholarship_award.py:63
-msgid "An active or pending Scholarship Award ({0}) already exists for this Program Enrollment. Only one award per enrollment is allowed."
+msgid ""
+"An active or pending Scholarship Award ({0}) already exists for this Program "
+"Enrollment. Only one award per enrollment is allowed."
 msgstr ""
 "Já existe uma atribuição de bolsa ativa ou pendente ({0}) para esta "
 "inscrição no programa. Só é permitida uma atribuição por inscrição."
@@ -240,7 +242,10 @@ msgstr "Centro de Custo"
 
 #. Description of the 'Cost Center' (Link) field in DocType 'Scholarships'
 #: oikonomos/oikonomos/doctype/scholarships/scholarships.json
-msgid "Cost center the forgiveness is booked to. Defaults from Seminary Settings → Scholarship Cost Center; override to budget this scholarship separately (the $ ceiling lives in an ERPNext Budget against this cost center)."
+msgid ""
+"Cost center the forgiveness is booked to. Defaults from Seminary Settings → "
+"Scholarship Cost Center; override to budget this scholarship separately (the "
+"$ ceiling lives in an ERPNext Budget against this cost center)."
 msgstr ""
 "Centro de custo ao qual o perdão é lançado. O padrão é definido em "
 "Configurações do Seminário → Centro de Custo da Bolsa; substitua-o para "
@@ -316,19 +321,25 @@ msgid "Customer Group"
 msgstr "Grupo de Clientes"
 
 #: oikonomos/financial/invoicing.py:272
-msgid "Customer Group {0} does not exist; set a valid Customer Group on the applicant before submitting."
+msgid ""
+"Customer Group {0} does not exist; set a valid Customer Group on the "
+"applicant before submitting."
 msgstr ""
 "O Grupo de Clientes {0} não existe; defina um Grupo de Clientes válido para "
 "o candidato antes de enviar."
 
 #: oikonomos/financial/application.py:77
-msgid "Customer Group {0} has no default Price List; cannot price the Application fee."
+msgid ""
+"Customer Group {0} has no default Price List; cannot price the Application "
+"fee."
 msgstr ""
 "O Grupo de Clientes {0} não tem uma Lista de Preços padrão; não é possível "
 "definir o preço da taxa de inscrição."
 
 #: oikonomos/financial/graduation.py:178
-msgid "Customer Group {0} has no default Price List; cannot price the Graduation Request fee."
+msgid ""
+"Customer Group {0} has no default Price List; cannot price the Graduation "
+"Request fee."
 msgstr ""
 "O Grupo de clientes {0} não tem uma Lista de preços predefinida; não é "
 "possível calcular o preço da taxa do pedido de graduação."
@@ -344,7 +355,9 @@ msgstr "Cliente {0} atualizado"
 #. Description of the 'Discount (%)' (Percent) field in DocType 'Scholarship
 #. Discounts'
 #: oikonomos/oikonomos/doctype/scholarship_discounts/scholarship_discounts.json
-msgid "Deprecated: superseded by Mode + Value. Retained only so the migration patch can backfill Value."
+msgid ""
+"Deprecated: superseded by Mode + Value. Retained only so the migration patch "
+"can backfill Value."
 msgstr ""
 "Obsoleto: substituído por Modo + Valor. Mantido apenas para que o patch de "
 "migração possa preencher o Valor."
@@ -556,7 +569,8 @@ msgid "Instructor Log Row"
 msgstr "Linha de registro do instrutor"
 
 #: oikonomos/oikonomos/doctype/instructor_log_payment/instructor_log_payment.py:25
-msgid "Instructor Log row {0} is already paid for event {1} (existing record: {2})."
+msgid ""
+"Instructor Log row {0} is already paid for event {1} (existing record: {2})."
 msgstr ""
 "A linha {0} do registro do docente já foi paga pelo evento {1} (registro "
 "existente: {2})."
@@ -628,7 +642,10 @@ msgstr "Deixe em branco para uma bolsa sem data de término."
 
 #. Description of a DocType
 #: oikonomos/oikonomos/doctype/trigger_fee_events/trigger_fee_events.json
-msgid "List of billing events that fee categories can be tied to, such as program enrollment or course enrollment. Use it to define and activate the moments at which a fee should be charged."
+msgid ""
+"List of billing events that fee categories can be tied to, such as program "
+"enrollment or course enrollment. Use it to define and activate the moments "
+"at which a fee should be charged."
 msgstr ""
 "Lista de eventos de faturação aos quais as categorias de taxas podem ser "
 "associadas, como a inscrição num programa ou num curso. Utilize-a para "
@@ -705,7 +722,9 @@ msgstr "Total mínimo de créditos"
 #. Description of the 'Min Credits per Term' (Int) field in DocType
 #. 'Scholarships'
 #: oikonomos/oikonomos/doctype/scholarships/scholarships.json
-msgid "Minimum credit hours the student must enroll in each term to keep the award. 0 = no requirement."
+msgid ""
+"Minimum credit hours the student must enroll in each term to keep the award. "
+"0 = no requirement."
 msgstr ""
 "Número mínimo de horas de crédito em que o estudante deve inscrever-se em "
 "cada período para manter a bolsa. 0 = sem requisito."
@@ -758,7 +777,10 @@ msgid "New Academic Year — {0} ({1})"
 msgstr "Novo ano académico — {0} ({1})"
 
 #: oikonomos/financial/graduation.py:84
-msgid "No 'Graduation Request' payer is configured on Program Enrollment {0}. Open the enrollment's Payers Fee Category section and add a payer row with Event = 'Graduation Request' before submitting."
+msgid ""
+"No 'Graduation Request' payer is configured on Program Enrollment {0}. Open "
+"the enrollment's Payers Fee Category section and add a payer row with Event "
+"= 'Graduation Request' before submitting."
 msgstr ""
 "Não está configurado nenhum pagador de 'Pedido de graduação' na Inscrição no "
 "Programa {0}. Abra a secção Categoria de taxas dos pagadores da inscrição e "
@@ -776,7 +798,9 @@ msgid "No Fiscal Year found."
 msgstr "Não foi encontrado nenhum ano fiscal."
 
 #: oikonomos/financial/graduation.py:191
-msgid "No Item Price found for Item {0} on Price List {1}. Add an Item Price before submitting the Graduation Request."
+msgid ""
+"No Item Price found for Item {0} on Price List {1}. Add an Item Price before "
+"submitting the Graduation Request."
 msgstr ""
 "Não foi encontrado nenhum preço de item para o item {0} na lista de preços "
 "{1}. Adicione um preço de item antes de submeter o Pedido de graduação."
@@ -787,14 +811,19 @@ msgid "No Payment Gateway Account configured for {0}."
 msgstr "Não está configurada nenhuma conta de gateway de pagamento para {0}."
 
 #: oikonomos/financial/backend.py:391
-msgid "No Sales Invoices were created. The following Fee Categories are not submitted: {0}. Submit them from the Fee Category list and try again."
+msgid ""
+"No Sales Invoices were created. The following Fee Categories are not "
+"submitted: {0}. Submit them from the Fee Category list and try again."
 msgstr ""
 "Não foram criadas faturas de vendas. As seguintes categorias de taxas não "
 "foram submetidas: {0}. Submeta-as a partir da lista de categorias de taxas e "
 "tente novamente."
 
 #: oikonomos/financial/backend.py:396
-msgid "No Sales Invoices were created. There are no active Program-Enrollment payer rows for this Payers Fee Category PE, or the matching Item Prices / Customer Groups are not configured."
+msgid ""
+"No Sales Invoices were created. There are no active Program-Enrollment payer "
+"rows for this Payers Fee Category PE, or the matching Item Prices / Customer "
+"Groups are not configured."
 msgstr ""
 "Não foram criadas faturas de vendas. Não existem linhas de pagadores ativas "
 "de Inscrição no Programa para esta Categoria de taxas dos pagadores PE, ou "
@@ -802,7 +831,9 @@ msgstr ""
 "configurados."
 
 #: oikonomos/financial/backend.py:493
-msgid "No Sales Invoices were created. {0} row(s) failed — see Error Log for details."
+msgid ""
+"No Sales Invoices were created. {0} row(s) failed — see Error Log for "
+"details."
 msgstr ""
 "Não foram criadas faturas de vendas. Falharam {0} linha(s) — consulte o "
 "Registo de erros para obter detalhes."
@@ -829,7 +860,10 @@ msgid "No outstanding balance to pay."
 msgstr "Não existe nenhum saldo pendente a pagar."
 
 #: oikonomos/financial/billing.py:262
-msgid "No payer is configured for the 'Culminating Project Extension' event on this enrollment. Configure a Fee Category with that trigger and add a payer row (Payers Fee Category PE) for it first."
+msgid ""
+"No payer is configured for the 'Culminating Project Extension' event on this "
+"enrollment. Configure a Fee Category with that trigger and add a payer row "
+"(Payers Fee Category PE) for it first."
 msgstr ""
 "Não está configurado nenhum pagador para o evento 'Extensão do projeto "
 "final' nesta inscrição. Configure primeiro uma categoria de taxas com esse "
@@ -865,7 +899,9 @@ msgstr "Os pagamentos online não estão ativados. Contacte a administração."
 
 #. Description of the 'Effective From' (Date) field in DocType 'Fee Category'
 #: oikonomos/oikonomos/doctype/fee_category/fee_category.json
-msgid "Only bill Program Enrollments whose Enrollment Date is strictly after this date. Leave blank to bill all active enrollments."
+msgid ""
+"Only bill Program Enrollments whose Enrollment Date is strictly after this "
+"date. Leave blank to bill all active enrollments."
 msgstr ""
 "Faturar apenas as inscrições em programas cuja data de inscrição seja "
 "estritamente posterior a esta data. Deixe em branco para faturar todas as "
@@ -910,11 +946,13 @@ msgid "Payer"
 msgstr "Pagador"
 
 #: oikonomos/oikonomos/doctype/payers_fee_category_pe/payers_fee_category_pe.py:18
-msgid "Payer shares changed. Enter a Change reason before saving (e.g. who requested the change and why)."
+msgid ""
+"Payer shares changed. Enter a Change reason before saving (e.g. who "
+"requested the change and why)."
 msgstr ""
 "As percentagens dos pagadores foram alteradas. Introduza um motivo da "
-"alteração antes de guardar (por exemplo, quem solicitou a alteração e porquê)"
-"."
+"alteração antes de guardar (por exemplo, quem solicitou a alteração e "
+"porquê)."
 
 #. Name of a DocType
 #. Label of a Link in the Student Billing Workspace
@@ -971,7 +1009,9 @@ msgstr "Pedidos pendentes"
 
 #. Description of the 'Show on Portal' (Check) field in DocType 'Scholarships'
 #: oikonomos/oikonomos/doctype/scholarships/scholarships.json
-msgid "Per-template portal gate. Combined with Seminary Settings → Allow Portal Scholarship, both must be on for students to see/apply."
+msgid ""
+"Per-template portal gate. Combined with Seminary Settings → Allow Portal "
+"Scholarship, both must be on for students to see/apply."
 msgstr ""
 "Controlo do portal por modelo. Em conjunto com Definições do Seminário → "
 "Permitir bolsa de estudo no portal, ambas as opções têm de estar ativadas "
@@ -988,7 +1028,9 @@ msgstr "Percentagem"
 #. Description of the 'Value' (Float) field in DocType 'Scholarship Discounts'
 #: oikonomos/oikonomos/doctype/scholarship_award_term/scholarship_award_term.json
 #: oikonomos/oikonomos/doctype/scholarship_discounts/scholarship_discounts.json
-msgid "Percent of the fee (Mode = Percent) or a flat currency amount per term (Mode = Flat)."
+msgid ""
+"Percent of the fee (Mode = Percent) or a flat currency amount per term (Mode "
+"= Flat)."
 msgstr ""
 "Percentagem da taxa (Modo = Percentagem) ou um montante fixo em moeda por "
 "período (Modo = Fixo)."
@@ -1103,7 +1145,9 @@ msgid "Readmission Fee — {0}"
 msgstr "Taxa de readmissão — {0}"
 
 #: oikonomos/oikonomos/doctype/student_balance/student_balance.js:37
-msgid "Rebuild the invoice list from current Sales Invoices? Any unsaved changes will be lost."
+msgid ""
+"Rebuild the invoice list from current Sales Invoices? Any unsaved changes "
+"will be lost."
 msgstr ""
 "Reconstruir a lista de faturas a partir das faturas de vendas atuais? "
 "Quaisquer alterações não guardadas serão perdidas."
@@ -1124,7 +1168,10 @@ msgstr "Registar pagamento"
 
 #. Description of a DocType
 #: oikonomos/oikonomos/doctype/instructor_log_payment/instructor_log_payment.json
-msgid "Record that a course an instructor taught was paid on a given salary slip, including the portion and amount. Created automatically when you run instructor payroll, and used to prevent paying the same teaching twice."
+msgid ""
+"Record that a course an instructor taught was paid on a given salary slip, "
+"including the portion and amount. Created automatically when you run "
+"instructor payroll, and used to prevent paying the same teaching twice."
 msgstr ""
 "Registar que o curso lecionado por um docente foi pago num determinado "
 "recibo de vencimento, incluindo a parte e o montante. Criado automaticamente "
@@ -1145,7 +1192,9 @@ msgstr "Referência"
 
 #. Description of the 'Trigger' (Data) field in DocType 'Trigger Fee Events'
 #: oikonomos/oikonomos/doctype/trigger_fee_events/trigger_fee_events.json
-msgid "Referenced by hard-coded name throughout the billing code. Fixed once created so existing fee/billing links never break."
+msgid ""
+"Referenced by hard-coded name throughout the billing code. Fixed once "
+"created so existing fee/billing links never break."
 msgstr ""
 "Referenciado por nome codificado em todo o código de faturação. Fica fixo "
 "após a criação, para que as ligações existentes a taxas/faturação nunca "
@@ -1179,7 +1228,9 @@ msgstr "Solicitado"
 
 #. Description of the 'Employee' (Link) field in DocType 'Scholarship Award'
 #: oikonomos/oikonomos/doctype/scholarship_award/scholarship_award.json
-msgid "Required for Work-Study awards when HRMS payroll is enabled; the daily retention check flags the award if this Employee is no longer Active."
+msgid ""
+"Required for Work-Study awards when HRMS payroll is enabled; the daily "
+"retention check flags the award if this Employee is no longer Active."
 msgstr ""
 "Obrigatório para bolsas de estudo-trabalho quando o processamento salarial "
 "do HRMS está ativado; a verificação diária de retenção sinaliza a bolsa se "
@@ -1188,7 +1239,10 @@ msgstr ""
 #. Description of the 'Change reason' (Small Text) field in DocType 'Payers Fee
 #. Category PE'
 #: oikonomos/oikonomos/doctype/payers_fee_category_pe/payers_fee_category_pe.json
-msgid "Required when you change payer shares. Auto-cleared after save — enter a fresh reason for each edit. Examples: 'Pastor Joe (Oak St Church) called 2026-05-15 — church stops paying after May.', 'Scholarship awarded.'"
+msgid ""
+"Required when you change payer shares. Auto-cleared after save — enter a "
+"fresh reason for each edit. Examples: 'Pastor Joe (Oak St Church) called "
+"2026-05-15 — church stops paying after May.', 'Scholarship awarded.'"
 msgstr ""
 "Obrigatório quando altera as quotas dos pagadores. É limpo automaticamente "
 "após guardar — introduza um motivo novo para cada edição. Exemplos: 'O "
@@ -1236,7 +1290,10 @@ msgstr "Devolução contra"
 
 #. Description of a DocType
 #: oikonomos/oikonomos/doctype/scholarships/scholarships.json
-msgid "Reusable scholarship template for a program that defines its discounts per fee, eligibility, and retention rules. Set one up so it can be granted to students through individual scholarship awards."
+msgid ""
+"Reusable scholarship template for a program that defines its discounts per "
+"fee, eligibility, and retention rules. Set one up so it can be granted to "
+"students through individual scholarship awards."
 msgstr ""
 "Modelo reutilizável de bolsa para um programa que define os seus descontos "
 "por taxa, os critérios de elegibilidade e as regras de retenção. Configure "
@@ -1244,7 +1301,10 @@ msgstr ""
 
 #. Description of a DocType
 #: oikonomos/oikonomos/doctype/student_balance/student_balance.json
-msgid "Running account of a student's invoices, payments, and credits with the amount still owed. Use it to see what a student currently owes and to record payments against their charges."
+msgid ""
+"Running account of a student's invoices, payments, and credits with the "
+"amount still owed. Use it to see what a student currently owes and to record "
+"payments against their charges."
 msgstr ""
 "Registo contínuo das faturas, pagamentos e créditos de um estudante, com o "
 "montante ainda em dívida. Utilize-o para ver o que um estudante deve "
@@ -1321,7 +1381,11 @@ msgstr "Bolsa em risco: {0}"
 
 #. Description of a DocType
 #: oikonomos/oikonomos/doctype/scholarship_award/scholarship_award.json
-msgid "Scholarship granted to a specific student for a specific program enrollment, with its own effective dates and discount terms. Use it to award financial aid, track its review and retention status, and apply the discount to the student's fees."
+msgid ""
+"Scholarship granted to a specific student for a specific program enrollment, "
+"with its own effective dates and discount terms. Use it to award financial "
+"aid, track its review and retention status, and apply the discount to the "
+"student's fees."
 msgstr ""
 "Bolsa atribuída a um estudante específico para uma inscrição específica num "
 "programa, com as suas próprias datas de vigência e condições de desconto. "
@@ -1344,7 +1408,9 @@ msgstr "Bolsas de Estudos"
 #. Description of the 'Is Academic Credit?' (Check) field in DocType 'Fee
 #. Category'
 #: oikonomos/oikonomos/doctype/fee_category/fee_category.json
-msgid "Selecting this checkbox is required if you want to charge this fee per academic credit once the student is enrolled in the academic term."
+msgid ""
+"Selecting this checkbox is required if you want to charge this fee per "
+"academic credit once the student is enrolled in the academic term."
 msgstr ""
 "É necessário selecionar esta caixa de verificação se pretender cobrar esta "
 "taxa por crédito académico depois de o estudante estar inscrito no período "
@@ -1361,7 +1427,10 @@ msgid "Seminary Manager"
 msgstr "Gestor do Seminário"
 
 #: oikonomos/oikonomos/doctype/fee_category/fee_category.py:33
-msgid "Seminary Settings are currently set to charge audit as a flat fee, not per credit. Either uncheck Is Credit here, or change Seminary Settings to allow audit per credit."
+msgid ""
+"Seminary Settings are currently set to charge audit as a flat fee, not per "
+"credit. Either uncheck Is Credit here, or change Seminary Settings to allow "
+"audit per credit."
 msgstr ""
 "As definições do Seminário estão atualmente configuradas para cobrar a "
 "auditoria como uma taxa fixa, e não por crédito. Desmarque a opção É crédito "
@@ -1369,7 +1438,10 @@ msgstr ""
 "auditoria por crédito."
 
 #: oikonomos/oikonomos/doctype/fee_category/fee_category.py:39
-msgid "Seminary Settings are currently set to charge audit as per credit. Either check Is Credit here, or change Seminary Settings to allow audit as a flat fee."
+msgid ""
+"Seminary Settings are currently set to charge audit as per credit. Either "
+"check Is Credit here, or change Seminary Settings to allow audit as a flat "
+"fee."
 msgstr ""
 "As definições do Seminário estão atualmente configuradas para cobrar a "
 "auditoria por crédito. Selecione a opção É crédito aqui ou altere as "
@@ -1387,7 +1459,11 @@ msgstr "Configuração incompleta"
 
 #. Description of a DocType
 #: oikonomos/oikonomos/doctype/payers_fee_category_pe/payers_fee_category_pe.json
-msgid "Setup that splits a student's program-enrollment charges among the people or organizations paying for them, such as the student, a church, or a sponsor. Use it to record who pays which share of each fee and to generate the resulting invoices."
+msgid ""
+"Setup that splits a student's program-enrollment charges among the people or "
+"organizations paying for them, such as the student, a church, or a sponsor. "
+"Use it to record who pays which share of each fee and to generate the "
+"resulting invoices."
 msgstr ""
 "Configuração que divide os encargos da inscrição do estudante no programa "
 "entre as pessoas ou organizações que os pagam, como o estudante, uma igreja "
@@ -1402,7 +1478,9 @@ msgstr "Mostrar no portal"
 #. Description of the 'Award Terms' (Table) field in DocType 'Scholarship
 #. Award'
 #: oikonomos/oikonomos/doctype/scholarship_award/scholarship_award.json
-msgid "Snapshot of the scholarship's discounts at grant time, so later edits to the scholarship template don't retroactively change this award."
+msgid ""
+"Snapshot of the scholarship's discounts at grant time, so later edits to the "
+"scholarship template don't retroactively change this award."
 msgstr ""
 "Instantâneo dos descontos da bolsa no momento da atribuição, para que as "
 "alterações posteriores ao modelo da bolsa não alterem retroativamente esta "
@@ -1594,7 +1672,10 @@ msgstr "Tipo"
 
 #. Description of a DocType
 #: oikonomos/oikonomos/doctype/fee_category/fee_category.json
-msgid "Type of charge a student can be billed for, such as tuition, registration, or a per-credit fee. Set one up for each kind of fee so it can be applied to enrollments and turned into invoices."
+msgid ""
+"Type of charge a student can be billed for, such as tuition, registration, "
+"or a per-credit fee. Set one up for each kind of fee so it can be applied to "
+"enrollments and turned into invoices."
 msgstr ""
 "Tipo de cobrança que pode ser faturada a um estudante, como propinas, "
 "matrícula ou uma taxa por crédito. Configure um para cada tipo de taxa, para "
