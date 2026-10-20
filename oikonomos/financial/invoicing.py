@@ -14,6 +14,8 @@ The generators bill from the payer snapshot (`Payers Fee Category PE` +
 """
 
 import frappe
+from babel.core import UnknownLocaleError
+from babel.dates import format_skeleton
 from frappe import _
 from frappe.utils import getdate
 
@@ -326,7 +328,10 @@ def generate_monthly_invoices(as_of=None):
 
     ctx = _billing_context()
     counts = {"created": 0, "skipped": 0, "failed": 0}
-    month_label = as_of.strftime("%B %Y")
+    # Invoice text is a record, so it is written in the site's language whoever runs the
+    # job; the wording and the month use the same one.
+    lang = frappe.db.get_single_value("System Settings", "language") or "en"
+    month_label = _month_year(as_of, lang)
     for pe_row in active_pes:
         pe_name = pe_row.pe_name
         rows = frappe.db.sql(
@@ -353,7 +358,9 @@ def generate_monthly_invoices(as_of=None):
             as_dict=True,
         )
         for r in rows:
-            summary = _("Monthly — {0} ({1})").format(month_label, r.fee_category)
+            summary = _("Monthly — {0} ({1})", lang=lang).format(
+                month_label, r.fee_category
+            )
             _create_trigger_invoice(
                 r,
                 f"MONTHLY:{month_tag}:{r.pep_name}",
@@ -427,3 +434,13 @@ def run_billing_automation(today=None):
     _run_nay_for_due_years(today)
     if today.day == 1:
         generate_monthly_invoices(today)
+
+def _month_year(d, lang):
+    """'October 2026' / 'outubro de 2026' in `lang` (aretenic decision 071).
+
+    strftime("%B") is English whatever the site's language.
+    """
+    try:
+        return format_skeleton("yMMMM", d, locale=lang.replace("-", "_"))
+    except (UnknownLocaleError, ValueError):
+        return format_skeleton("yMMMM", d, locale="en")
