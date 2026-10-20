@@ -28,6 +28,12 @@ Pre-commit is configured to use the following tools for checking and formatting 
 - prettier
 - pyupgrade
 
+### Translations
+
+[![Translation status](https://translate.seminaryerp.org/widget/klisia/oikonomos/matrix-auto.svg)](https://translate.seminaryerp.org/projects/klisia/oikonomos/)
+
+Translations are managed on [Weblate](https://translate.seminaryerp.org/projects/klisia/oikonomos/). When you add or change user-facing strings, run `bench generate-pot-file --app oikonomos` and commit `oikonomos/locale/main.pot`; Weblate picks up the new strings from there.
+
 ### License
 
 mit
