@@ -188,25 +188,28 @@ override_doctype_class = {
     "Payment Request": "oikonomos.financial.payment_request.SeminaryPaymentRequest",
 }
 
+# Hooks that bill or create customers go through oikonomos.financial.active,
+# so they act only while oikonomos is the active billing app (another, such as
+# tamias, may be installed beside it).
 doc_events = {
     "Culminating Project Extension": {
-        "on_submit": "oikonomos.financial.extension.on_submit",
-        "on_cancel": "oikonomos.financial.extension.on_cancel",
+        "on_submit": "oikonomos.financial.active.extension_on_submit",
+        "on_cancel": "oikonomos.financial.active.extension_on_cancel",
     },
     "Graduation Request": {
-        "on_submit": "oikonomos.financial.graduation.on_submit",
-        "on_cancel": "oikonomos.financial.graduation.on_cancel",
+        "on_submit": "oikonomos.financial.active.graduation_on_submit",
+        "on_cancel": "oikonomos.financial.active.graduation_on_cancel",
     },
     "Program Enrollment": {
         # before_submit so payer rows exist before seminary's on_submit fulfiller
         # auto-enrolls CEIs that invoice against them.
-        "before_submit": "oikonomos.financial.backend.prepare_enrollment_payers",
+        "before_submit": "oikonomos.financial.active.prepare_enrollment_payers",
     },
     "Course Enrollment Individual": {
-        "on_cancel": "oikonomos.financial.backend.on_cei_cancel",
+        "on_cancel": "oikonomos.financial.active.on_cei_cancel",
     },
     "Student Applicant": {
-        "after_insert": "oikonomos.financial.application.on_applicant_insert",
+        "after_insert": "oikonomos.financial.active.on_applicant_insert",
     },
     # Person<->Customer mirror teardown. Both halves are read-only custom fields,
     # so without these on_trash handlers neither side is deletable and there is no
@@ -222,8 +225,8 @@ doc_events = {
     # Student Balance lifecycle (doctype relocated from seminary). A balance is
     # opened for every Student and tracks their submitted Sales Invoices.
     "Student": {
-        "after_insert": "oikonomos.oikonomos.doctype.student_balance.student_balance.create_student_balance",
-        "on_update": "oikonomos.financial.customer_person.on_student_update",
+        "after_insert": "oikonomos.financial.active.create_student_balance",
+        "on_update": "oikonomos.financial.active.on_student_update",
     },
     # Sales Invoice drives both the Student Balance ledger and payment-reactive
     # academic advancement (CEI / Graduation Request). The advancement handlers
@@ -319,9 +322,9 @@ standard_portal_menu_items = [
 # flag; a Frappe-only seminary never runs it (oikonomos isn't installed).
 scheduler_events = {
     "daily": [
-        "oikonomos.financial.invoicing.run_billing_automation",
+        "oikonomos.financial.active.run_billing_automation",
         # Scholarship retention review (relocated from seminary tasks.daily).
-        "oikonomos.financial.scholarship.review_scholarship_retention",
+        "oikonomos.financial.active.review_scholarship_retention",
     ],
 }
 
