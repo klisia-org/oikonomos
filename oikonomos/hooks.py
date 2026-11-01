@@ -438,6 +438,9 @@ scheduler_events = {
 
 # Fee setup sits in Seminary's Setup sidebar while oikonomos is the active billing app
 # (seminary decision 088a §4).
+# The ledger's totals in aretenic's accreditor reports (aretenic decision 080 §7).
+aretenic_report_financials = ["oikonomos.financial.report_financials.report_financials"]
+
 seminary_setup_sections = [
     {
         "section": "Fees setup",
