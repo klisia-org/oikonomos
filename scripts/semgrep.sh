@@ -41,6 +41,7 @@ exec semgrep scan \
 	--exclude oikonomos/builder_files \
 	--exclude scripts \
 	--exclude runbooks \
+	--exclude prototypes \
 	--exclude tooling \
 	--exclude "$RULES" \
 	--error \
