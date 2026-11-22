@@ -1,0 +1,35 @@
+# Shared CI check. Written by aretenic's tooling/precommit/sync.py.
+name: Pre-commit
+
+on:
+  pull_request:
+  push:
+    branches: [develop, main]
+
+concurrency:
+  group: pre-commit-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  pre-commit:
+    name: Pre-commit (lint, format, security)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/pre-commit
+          key: pre-commit-${{ runner.os }}-${{ hashFiles('.pre-commit-config.yaml') }}
+
+      - run: pip install pre-commit
+
+      - name: Run every hook on every file
+        env:
+          # Hooks that need a local bench or docs install.
+          SKIP: docs-check-sources,software-manual-check
+        run: pre-commit run --all-files --show-diff-on-failure
