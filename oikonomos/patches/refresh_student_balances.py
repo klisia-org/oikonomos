@@ -12,28 +12,25 @@ import frappe
 
 
 def execute():
-    from oikonomos.oikonomos.doctype.student_balance.student_balance import (
-        refresh_from_sales_invoices,
-    )
+	from oikonomos.oikonomos.doctype.student_balance.student_balance import (
+		refresh_from_sales_invoices,
+	)
 
-    open_balances = frappe.get_all(
-        "Student Balance",
-        filters={"is_open": 1},
-        pluck="name",
-    )
-    print(f"Refreshing {len(open_balances)} open Student Balances...")
+	open_balances = frappe.get_all(
+		"Student Balance",
+		filters={"is_open": 1},
+		pluck="name",
+	)
+	print(f"Refreshing {len(open_balances)} open Student Balances...")
 
-    refreshed = 0
-    for sb_name in open_balances:
-        try:
-            result = refresh_from_sales_invoices(sb_name)
-            refreshed += 1
-            print(
-                f"  {sb_name}: {result['invoices']} invoices, "
-                f"net outstanding {result['net_outstanding']}"
-            )
-        except Exception as e:
-            print(f"  {sb_name}: ERROR - {e}")
+	refreshed = 0
+	for sb_name in open_balances:
+		try:
+			result = refresh_from_sales_invoices(sb_name)
+			refreshed += 1
+			print(f"  {sb_name}: {result['invoices']} invoices, net outstanding {result['net_outstanding']}")
+		except Exception as e:
+			print(f"  {sb_name}: ERROR - {e}")
 
-    frappe.db.commit()
-    print(f"Done. Refreshed {refreshed} balances.")
+	frappe.db.commit()
+	print(f"Done. Refreshed {refreshed} balances.")

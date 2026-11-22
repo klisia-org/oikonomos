@@ -19,229 +19,217 @@ import frappe
 
 # The fee schedule every demo program charges. rate is the per-unit Item Price.
 _DEMO_FEES = [
-    {
-        "fee_category": "Credit hour",
-        "item": "Credit hour",
-        "is_credit": 1,
-        "event": "Course Enrollment",
-        "rate": 250.0,
-    },
-    {
-        "fee_category": "Program Admission Fee",
-        "item": "Admission Fee",
-        "is_credit": 0,
-        "event": "Program Enrollment",
-        "rate": 100.0,
-    },
+	{
+		"fee_category": "Credit hour",
+		"item": "Credit hour",
+		"is_credit": 1,
+		"event": "Course Enrollment",
+		"rate": 250.0,
+	},
+	{
+		"fee_category": "Program Admission Fee",
+		"item": "Admission Fee",
+		"is_credit": 0,
+		"event": "Program Enrollment",
+		"rate": 100.0,
+	},
 ]
 
 
 def install_demo_data():
-    """Full demo: seminary's academic data + the oikonomos billing catalog,
-    sequenced so enrollments build payer snapshots and CEIs invoice."""
-    from seminary.demo import demo_data as d
+	"""Full demo: seminary's academic data + the oikonomos billing catalog,
+	sequenced so enrollments build payer snapshots and CEIs invoice."""
+	from seminary.demo import demo_data as d
 
-    if frappe.db.exists("Academic Year", f"{d.DEMO_PREFIX}2024-25"):
-        frappe.msgprint("Demo data already installed, skipping.", alert=True)
-        return
+	if frappe.db.exists("Academic Year", f"{d.DEMO_PREFIX}2024-25"):
+		frappe.msgprint("Demo data already installed, skipping.", alert=True)
+		return
 
-    frappe.flags.in_demo_install = True
-    try:
-        d.create_academic_years()
-        d.create_academic_terms()
-        d.create_courses()
-        d.create_programs()
-        # Billing catalog must exist before enrollments (payers build from it)
-        # and before CEIs (they invoice against it).
-        seed_billing_catalog()
-        d.create_users()
-        d.create_students()
-        # Tag the auto-created student Customers (billing identities) so the demo
-        # teardown removes them too.
-        _tag_demo_customers()
-        d.create_instructor_categories()
-        d.create_instructors()
-        frappe.db.commit()
-        d.create_program_enrollments()
-        d.create_course_schedules()
-        d.create_course_enrollments()
-        frappe.db.set_single_value("Seminary Settings", "demo_data_installed", 1)
-        frappe.db.commit()
-        frappe.msgprint(
-            "✅ Seminary demo data (with billing) installed successfully!", alert=True
-        )
-    except Exception:
-        frappe.db.rollback()
-        frappe.log_error("Oikonomos demo data installation failed")
-        raise
-    finally:
-        frappe.flags.in_demo_install = False
+	frappe.flags.in_demo_install = True
+	try:
+		d.create_academic_years()
+		d.create_academic_terms()
+		d.create_courses()
+		d.create_programs()
+		# Billing catalog must exist before enrollments (payers build from it)
+		# and before CEIs (they invoice against it).
+		seed_billing_catalog()
+		d.create_users()
+		d.create_students()
+		# Tag the auto-created student Customers (billing identities) so the demo
+		# teardown removes them too.
+		_tag_demo_customers()
+		d.create_instructor_categories()
+		d.create_instructors()
+		frappe.db.commit()
+		d.create_program_enrollments()
+		d.create_course_schedules()
+		d.create_course_enrollments()
+		frappe.db.set_single_value("Seminary Settings", "demo_data_installed", 1)
+		frappe.db.commit()
+		frappe.msgprint("✅ Seminary demo data (with billing) installed successfully!", alert=True)
+	except Exception:
+		frappe.db.rollback()
+		frappe.log_error("Oikonomos demo data installation failed")
+		raise
+	finally:
+		frappe.flags.in_demo_install = False
 
 
 def seed_billing_catalog():
-    """Create the demo Fee Categories, their Item Prices, and a Program Fees row
-    per demo program. Idempotent."""
-    from seminary.demo.demo_data import DEMO_PREFIX
+	"""Create the demo Fee Categories, their Item Prices, and a Program Fees row
+	per demo program. Idempotent."""
+	from seminary.demo.demo_data import DEMO_PREFIX
 
-    price_list = frappe.db.get_value(
-        "Price List", {"selling": 1, "enabled": 1}, "name", order_by="creation asc"
-    )
-    _ensure_student_price_list(price_list)
+	price_list = frappe.db.get_value(
+		"Price List", {"selling": 1, "enabled": 1}, "name", order_by="creation asc"
+	)
+	_ensure_student_price_list(price_list)
 
-    for spec in _DEMO_FEES:
-        _ensure_fee_category(spec)
-        _ensure_item_price(spec["item"], price_list, spec["rate"])
+	for spec in _DEMO_FEES:
+		_ensure_fee_category(spec)
+		_ensure_item_price(spec["item"], price_list, spec["rate"])
 
-    demo_programs = frappe.get_all(
-        "Program", filters={"name": ("like", f"{DEMO_PREFIX}%")}, pluck="name"
-    )
-    for program in demo_programs:
-        for spec in _DEMO_FEES:
-            _ensure_program_fee(program, spec)
+	demo_programs = frappe.get_all("Program", filters={"name": ("like", f"{DEMO_PREFIX}%")}, pluck="name")
+	for program in demo_programs:
+		for spec in _DEMO_FEES:
+			_ensure_program_fee(program, spec)
 
 
 def _ensure_student_price_list(price_list):
-    if not price_list:
-        return
-    if frappe.db.exists("Customer Group", "Student") and not frappe.db.get_value(
-        "Customer Group", "Student", "default_price_list"
-    ):
-        frappe.db.set_value(
-            "Customer Group", "Student", "default_price_list", price_list
-        )
+	if not price_list:
+		return
+	if frappe.db.exists("Customer Group", "Student") and not frappe.db.get_value(
+		"Customer Group", "Student", "default_price_list"
+	):
+		frappe.db.set_value("Customer Group", "Student", "default_price_list", price_list)
 
 
 def _ensure_fee_category(spec):
-    if frappe.db.exists("Fee Category", spec["fee_category"]):
-        return
-    fc = frappe.get_doc(
-        {
-            "doctype": "Fee Category",
-            "category_name": spec["fee_category"],
-            "item": spec["item"],
-            "is_credit": spec["is_credit"],
-            "feecategory_type": "Tuition",
-            "payment_term_template": "For immediate payment",
-            "fc_event": spec["event"],
-        }
-    )
-    fc.flags.ignore_permissions = True
-    fc.insert()
-    if fc.meta.is_submittable:
-        fc.submit()
+	if frappe.db.exists("Fee Category", spec["fee_category"]):
+		return
+	fc = frappe.get_doc(
+		{
+			"doctype": "Fee Category",
+			"category_name": spec["fee_category"],
+			"item": spec["item"],
+			"is_credit": spec["is_credit"],
+			"feecategory_type": "Tuition",
+			"payment_term_template": "For immediate payment",
+			"fc_event": spec["event"],
+		}
+	)
+	fc.flags.ignore_permissions = True
+	fc.insert()
+	if fc.meta.is_submittable:
+		fc.submit()
 
 
 def _ensure_item_price(item, price_list, rate):
-    if not price_list or frappe.db.exists(
-        "Item Price", {"item_code": item, "price_list": price_list}
-    ):
-        return
-    ip = frappe.get_doc(
-        {
-            "doctype": "Item Price",
-            "item_code": item,
-            "price_list": price_list,
-            "price_list_rate": rate,
-            "selling": 1,
-        }
-    )
-    ip.flags.ignore_permissions = True
-    ip.insert()
+	if not price_list or frappe.db.exists("Item Price", {"item_code": item, "price_list": price_list}):
+		return
+	ip = frappe.get_doc(
+		{
+			"doctype": "Item Price",
+			"item_code": item,
+			"price_list": price_list,
+			"price_list_rate": rate,
+			"selling": 1,
+		}
+	)
+	ip.flags.ignore_permissions = True
+	ip.insert()
 
 
 def _tag_demo_customers():
-    """Tag the Customers auto-created for demo students (via on_student_update) so
-    remove_demo_billing finds them. Demo students themselves are tagged by
-    seminary's insert_demo_doc; their Customer link gives us the billing identity."""
-    from seminary.demo.cleanup import DEMO_TAG
+	"""Tag the Customers auto-created for demo students (via on_student_update) so
+	remove_demo_billing finds them. Demo students themselves are tagged by
+	seminary's insert_demo_doc; their Customer link gives us the billing identity."""
+	from seminary.demo.cleanup import DEMO_TAG
 
-    demo_students = frappe.get_all(
-        "Tag Link",
-        filters={"document_type": "Student", "tag": DEMO_TAG},
-        pluck="document_name",
-    )
-    for stu in demo_students:
-        customer = frappe.db.get_value("Student", stu, "customer")
-        if customer:
-            frappe.get_doc("Customer", customer).add_tag(DEMO_TAG)
+	demo_students = frappe.get_all(
+		"Tag Link",
+		filters={"document_type": "Student", "tag": DEMO_TAG},
+		pluck="document_name",
+	)
+	for stu in demo_students:
+		customer = frappe.db.get_value("Student", stu, "customer")
+		if customer:
+			frappe.get_doc("Customer", customer).add_tag(DEMO_TAG)
 
 
 def remove_demo_billing(deleted_counts=None):
-    """seminary_demo_cleanup hook: tear down the billing demo records (Sales
-    Invoices auto-raised for demo CEIs + the demo Customers) before seminary
-    deletes the academic docs they reference. Records counts into the shared
-    ``deleted_counts`` dict so they appear in the cleanup summary."""
-    from seminary.demo.cleanup import DEMO_TAG
+	"""seminary_demo_cleanup hook: tear down the billing demo records (Sales
+	Invoices auto-raised for demo CEIs + the demo Customers) before seminary
+	deletes the academic docs they reference. Records counts into the shared
+	``deleted_counts`` dict so they appear in the cleanup summary."""
+	from seminary.demo.cleanup import DEMO_TAG
 
-    if deleted_counts is None:
-        deleted_counts = {}
+	if deleted_counts is None:
+		deleted_counts = {}
 
-    # Sales Invoices are auto-created on CEI submission (not tagged); find them
-    # via the demo CEIs and force-delete (docstatus=2 bypasses GL/payment checks).
-    demo_ceis = frappe.get_all(
-        "Tag Link",
-        filters={"document_type": "Course Enrollment Individual", "tag": DEMO_TAG},
-        pluck="document_name",
-    )
-    if demo_ceis:
-        si_count = 0
-        for inv_name in frappe.get_all(
-            "Sales Invoice", filters={"custom_cei": ("in", demo_ceis)}, pluck="name"
-        ):
-            try:
-                frappe.db.set_value(
-                    "Sales Invoice", inv_name, "docstatus", 2, update_modified=False
-                )
-                frappe.delete_doc(
-                    "Sales Invoice",
-                    inv_name,
-                    force=True,
-                    ignore_permissions=True,
-                    delete_permanently=True,
-                )
-                si_count += 1
-            except Exception:
-                frappe.log_error(f"Failed to delete Sales Invoice {inv_name}")
-        if si_count:
-            deleted_counts["Sales Invoice"] = si_count
+	# Sales Invoices are auto-created on CEI submission (not tagged); find them
+	# via the demo CEIs and force-delete (docstatus=2 bypasses GL/payment checks).
+	demo_ceis = frappe.get_all(
+		"Tag Link",
+		filters={"document_type": "Course Enrollment Individual", "tag": DEMO_TAG},
+		pluck="document_name",
+	)
+	if demo_ceis:
+		si_count = 0
+		for inv_name in frappe.get_all(
+			"Sales Invoice", filters={"custom_cei": ("in", demo_ceis)}, pluck="name"
+		):
+			try:
+				frappe.db.set_value("Sales Invoice", inv_name, "docstatus", 2, update_modified=False)
+				frappe.delete_doc(
+					"Sales Invoice",
+					inv_name,
+					force=True,
+					ignore_permissions=True,
+					delete_permanently=True,
+				)
+				si_count += 1
+			except Exception:
+				frappe.log_error(f"Failed to delete Sales Invoice {inv_name}")
+		if si_count:
+			deleted_counts["Sales Invoice"] = si_count
 
-    # Demo Customers (the student billing identities) are tagged like the rest of
-    # the demo data.
-    cust_count = 0
-    for cust in frappe.get_all(
-        "Tag Link",
-        filters={"document_type": "Customer", "tag": DEMO_TAG},
-        pluck="document_name",
-    ):
-        try:
-            frappe.delete_doc(
-                "Customer",
-                cust,
-                force=True,
-                ignore_permissions=True,
-                delete_permanently=True,
-            )
-            cust_count += 1
-        except Exception:
-            frappe.log_error(f"Failed to delete Customer {cust}")
-    if cust_count:
-        deleted_counts["Customer"] = cust_count
+	# Demo Customers (the student billing identities) are tagged like the rest of
+	# the demo data.
+	cust_count = 0
+	for cust in frappe.get_all(
+		"Tag Link",
+		filters={"document_type": "Customer", "tag": DEMO_TAG},
+		pluck="document_name",
+	):
+		try:
+			frappe.delete_doc(
+				"Customer",
+				cust,
+				force=True,
+				ignore_permissions=True,
+				delete_permanently=True,
+			)
+			cust_count += 1
+		except Exception:
+			frappe.log_error(f"Failed to delete Customer {cust}")
+	if cust_count:
+		deleted_counts["Customer"] = cust_count
 
-    return deleted_counts
+	return deleted_counts
 
 
 def _ensure_program_fee(program, spec):
-    if frappe.db.exists(
-        "Program Fees", {"program": program, "pgm_feecategory": spec["fee_category"]}
-    ):
-        return
-    pf = frappe.get_doc(
-        {
-            "doctype": "Program Fees",
-            "program": program,
-            "pgm_feecategory": spec["fee_category"],
-            "pgm_feeevent": spec["event"],
-        }
-    )
-    pf.flags.ignore_permissions = True
-    pf.insert()
+	if frappe.db.exists("Program Fees", {"program": program, "pgm_feecategory": spec["fee_category"]}):
+		return
+	pf = frappe.get_doc(
+		{
+			"doctype": "Program Fees",
+			"program": program,
+			"pgm_feecategory": spec["fee_category"],
+			"pgm_feeevent": spec["event"],
+		}
+	)
+	pf.flags.ignore_permissions = True
+	pf.insert()

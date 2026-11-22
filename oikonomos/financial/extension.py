@@ -17,31 +17,29 @@ from oikonomos.financial.billing import create_extension_invoices
 
 
 def on_submit(doc, method=None):
-    """Charge the extension fee to the enrollment's payers. The fee is whatever
-    Fee Category carries the 'Culminating Project Extension' trigger."""
-    if doc.invoiced:
-        return
-    program_enrollment = doc.program_enrollment or frappe.db.get_value(
-        "Culminating Project", doc.culminating_project, "program_enrollment"
-    )
-    if not doc.program_enrollment and program_enrollment:
-        doc.db_set("program_enrollment", program_enrollment)
-    summary = _("Culminating Project Extension: {0} ({1})").format(
-        doc.culminating_project, doc.academic_term
-    )
-    invoices = create_extension_invoices(program_enrollment, doc.student, summary)
-    doc.db_set("sales_invoices", "\n".join(invoices))
-    doc.db_set("invoiced", 1)
+	"""Charge the extension fee to the enrollment's payers. The fee is whatever
+	Fee Category carries the 'Culminating Project Extension' trigger."""
+	if doc.invoiced:
+		return
+	program_enrollment = doc.program_enrollment or frappe.db.get_value(
+		"Culminating Project", doc.culminating_project, "program_enrollment"
+	)
+	if not doc.program_enrollment and program_enrollment:
+		doc.db_set("program_enrollment", program_enrollment)
+	summary = _("Culminating Project Extension: {0} ({1})").format(doc.culminating_project, doc.academic_term)
+	invoices = create_extension_invoices(program_enrollment, doc.student, summary)
+	doc.db_set("sales_invoices", "\n".join(invoices))
+	doc.db_set("invoiced", 1)
 
 
 def on_cancel(doc, method=None):
-    """Cancel the Sales Invoices this extension created."""
-    for name in (doc.sales_invoices or "").splitlines():
-        name = name.strip()
-        if not name:
-            continue
-        if frappe.db.get_value("Sales Invoice", name, "docstatus") != 1:
-            continue
-        invoice = frappe.get_doc("Sales Invoice", name)
-        invoice.flags.ignore_permissions = True
-        invoice.cancel()
+	"""Cancel the Sales Invoices this extension created."""
+	for name in (doc.sales_invoices or "").splitlines():
+		name = name.strip()
+		if not name:
+			continue
+		if frappe.db.get_value("Sales Invoice", name, "docstatus") != 1:
+			continue
+		invoice = frappe.get_doc("Sales Invoice", name)
+		invoice.flags.ignore_permissions = True
+		invoice.cancel()

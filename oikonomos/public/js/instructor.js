@@ -6,12 +6,18 @@
 frappe.ui.form.on("Instructor", {
 	refresh(frm) {
 		if (!frm.is_new() && frm.doc.instructor_type === "Volunteer" && !frm.doc.supplier) {
-			frm.add_custom_button(__("Create Supplier"), function() {
-				frappe.call({
-					method: "oikonomos.financial.instructor.create_supplier",
-					args: { instructor: frm.doc.name },
-				}).then(() => frm.reload_doc());
-			}, __("Actions"));
+			frm.add_custom_button(
+				__("Create Supplier"),
+				function () {
+					frappe
+						.call({
+							method: "oikonomos.financial.instructor.create_supplier",
+							args: { instructor: frm.doc.name },
+						})
+						.then(() => frm.reload_doc());
+				},
+				__("Actions")
+			);
 		}
 	},
 });

@@ -12,7 +12,6 @@ the bridge; with no oikonomos installed there is nothing to price.
 import frappe
 from frappe import _
 
-
 _PROGRAM_PRICING_TEMPLATE = """
 <style>
 .program-pricing { font-size: 13px; margin-left: 6px; }
@@ -100,137 +99,133 @@ _PROGRAM_PRICING_TEMPLATE = """
 
 @frappe.whitelist()
 def get_program_pricing_html():
-    """Render the Program Pricing report (one block per selling Price List).
+	"""Render the Program Pricing report (one block per selling Price List).
 
-    Resolves: customer groups whose default_price_list = the price list,
-    every Program with its Program Fees rows, the Fee Category lookups
-    (item, is_credit, is_audit, payment_term_template), and the matching
-    Item Price for the chosen Price List.
-    """
-    price_lists = frappe.get_all(
-        "Price List",
-        filters={"selling": 1, "enabled": 1},
-        fields=["name", "currency"],
-        order_by="name asc",
-    )
+	Resolves: customer groups whose default_price_list = the price list,
+	every Program with its Program Fees rows, the Fee Category lookups
+	(item, is_credit, is_audit, payment_term_template), and the matching
+	Item Price for the chosen Price List.
+	"""
+	price_lists = frappe.get_all(
+		"Price List",
+		filters={"selling": 1, "enabled": 1},
+		fields=["name", "currency"],
+		order_by="name asc",
+	)
 
-    programs_raw = frappe.get_all(
-        "Program",
-        fields=[
-            "name",
-            "program_name",
-            "is_free",
-            "require_pay_submit",
-            "percent_to_pay",
-        ],
-        order_by="program_name asc",
-    )
-    program_names = [p["name"] for p in programs_raw]
+	programs_raw = frappe.get_all(
+		"Program",
+		fields=[
+			"name",
+			"program_name",
+			"is_free",
+			"require_pay_submit",
+			"percent_to_pay",
+		],
+		order_by="program_name asc",
+	)
+	program_names = [p["name"] for p in programs_raw]
 
-    fee_rows = []
-    if program_names:
-        fee_rows = frappe.get_all(
-            "Program Fees",
-            filters={"program": ["in", program_names]},
-            fields=["program", "pgm_feecategory", "pgm_feeevent", "idx"],
-            order_by="program asc, idx asc",
-        )
+	fee_rows = []
+	if program_names:
+		fee_rows = frappe.get_all(
+			"Program Fees",
+			filters={"program": ["in", program_names]},
+			fields=["program", "pgm_feecategory", "pgm_feeevent", "idx"],
+			order_by="program asc, idx asc",
+		)
 
-    fee_category_names = sorted(
-        {r["pgm_feecategory"] for r in fee_rows if r.get("pgm_feecategory")}
-    )
-    fee_categories = {}
-    if fee_category_names:
-        for fc in frappe.get_all(
-            "Fee Category",
-            filters={"name": ["in", fee_category_names]},
-            fields=[
-                "name",
-                "category_name",
-                "item",
-                "is_credit",
-                "is_audit",
-                "payment_term_template",
-            ],
-        ):
-            fee_categories[fc["name"]] = fc
+	fee_category_names = sorted({r["pgm_feecategory"] for r in fee_rows if r.get("pgm_feecategory")})
+	fee_categories = {}
+	if fee_category_names:
+		for fc in frappe.get_all(
+			"Fee Category",
+			filters={"name": ["in", fee_category_names]},
+			fields=[
+				"name",
+				"category_name",
+				"item",
+				"is_credit",
+				"is_audit",
+				"payment_term_template",
+			],
+		):
+			fee_categories[fc["name"]] = fc
 
-    fees_by_program = {}
-    referenced_items = set()
-    for r in fee_rows:
-        fc = fee_categories.get(r.get("pgm_feecategory")) or {}
-        item = fc.get("item")
-        if item:
-            referenced_items.add(item)
-        fees_by_program.setdefault(r["program"], []).append(
-            {
-                "fee_category": fc.get("category_name") or r.get("pgm_feecategory"),
-                "event": r.get("pgm_feeevent"),
-                "item": item,
-                "is_credit": fc.get("is_credit"),
-                "is_audit": fc.get("is_audit"),
-                "payment_term_template": fc.get("payment_term_template"),
-            }
-        )
+	fees_by_program = {}
+	referenced_items = set()
+	for r in fee_rows:
+		fc = fee_categories.get(r.get("pgm_feecategory")) or {}
+		item = fc.get("item")
+		if item:
+			referenced_items.add(item)
+		fees_by_program.setdefault(r["program"], []).append(
+			{
+				"fee_category": fc.get("category_name") or r.get("pgm_feecategory"),
+				"event": r.get("pgm_feeevent"),
+				"item": item,
+				"is_credit": fc.get("is_credit"),
+				"is_audit": fc.get("is_audit"),
+				"payment_term_template": fc.get("payment_term_template"),
+			}
+		)
 
-    programs = []
-    for p in programs_raw:
-        programs.append({**p, "fees": fees_by_program.get(p["name"], [])})
+	programs = []
+	for p in programs_raw:
+		programs.append({**p, "fees": fees_by_program.get(p["name"], [])})
 
-    enriched_price_lists = []
-    for pl in price_lists:
-        customer_groups = [
-            cg["name"]
-            for cg in frappe.get_all(
-                "Customer Group",
-                filters={"default_price_list": pl["name"]},
-                fields=["name"],
-                order_by="name asc",
-            )
-        ]
+	enriched_price_lists = []
+	for pl in price_lists:
+		customer_groups = [
+			cg["name"]
+			for cg in frappe.get_all(
+				"Customer Group",
+				filters={"default_price_list": pl["name"]},
+				fields=["name"],
+				order_by="name asc",
+			)
+		]
 
-        prices = {}
-        if referenced_items:
-            for ip in frappe.get_all(
-                "Item Price",
-                filters={
-                    "price_list": pl["name"],
-                    "item_code": ["in", list(referenced_items)],
-                },
-                fields=["item_code", "price_list_rate", "modified"],
-                order_by="modified desc",
-            ):
-                if ip["item_code"] in prices:
-                    continue
-                prices[ip["item_code"]] = {
-                    "rate": ip.get("price_list_rate"),
-                    "modified_display": frappe.utils.format_datetime(
-                        ip.get("modified"), "yyyy-MM-dd HH:mm"
-                    ),
-                }
+		prices = {}
+		if referenced_items:
+			for ip in frappe.get_all(
+				"Item Price",
+				filters={
+					"price_list": pl["name"],
+					"item_code": ["in", list(referenced_items)],
+				},
+				fields=["item_code", "price_list_rate", "modified"],
+				order_by="modified desc",
+			):
+				if ip["item_code"] in prices:
+					continue
+				prices[ip["item_code"]] = {
+					"rate": ip.get("price_list_rate"),
+					"modified_display": frappe.utils.format_datetime(ip.get("modified"), "yyyy-MM-dd HH:mm"),
+				}
 
-        enriched_price_lists.append(
-            {
-                "name": pl["name"],
-                "currency": pl.get("currency"),
-                "customer_groups": customer_groups,
-                "prices": prices,
-            }
-        )
+		enriched_price_lists.append(
+			{
+				"name": pl["name"],
+				"currency": pl.get("currency"),
+				"customer_groups": customer_groups,
+				"prices": prices,
+			}
+		)
 
-    return frappe.render_template(
-        _PROGRAM_PRICING_TEMPLATE,
-        {"price_lists": enriched_price_lists, "programs": programs},
-    )
+	return frappe.render_template(
+		_PROGRAM_PRICING_TEMPLATE,
+		{"price_lists": enriched_price_lists, "programs": programs},
+	)
 
 
 @frappe.whitelist()
 def get_program_fees(program):
-    """Fee Category rows configured on a program's Program Fees (the oikonomos
-    pricing schedule). Called from the Scholarships form to scope an award to a
-    program's fees."""
-    return frappe.get_all(
-        "Program Fees",
-        filters={"program": program},
-        fields=["pgm_feecategory"],
-    )
+	"""Fee Category rows configured on a program's Program Fees (the oikonomos
+	pricing schedule). Called from the Scholarships form to scope an award to a
+	program's fees."""
+	return frappe.get_all(
+		"Program Fees",
+		filters={"program": program},
+		fields=["pgm_feecategory"],
+	)

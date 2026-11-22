@@ -34,7 +34,9 @@ frappe.ui.form.on("Student Balance", {
 
 function refresh_from_invoices(frm) {
 	frappe.confirm(
-		__("Rebuild the invoice list from current Sales Invoices? Any unsaved changes will be lost."),
+		__(
+			"Rebuild the invoice list from current Sales Invoices? Any unsaved changes will be lost."
+		),
 		() => {
 			frappe.call({
 				method: "seminary.seminary.doctype.student_balance.student_balance.refresh_from_sales_invoices",
@@ -97,8 +99,7 @@ function show_payment_dialog(frm, prefill_amount, is_full) {
 
 function record_payment(frm, amount, mode_of_payment) {
 	frappe.call({
-		method:
-			"seminary.seminary.doctype.student_balance.student_balance.record_payment",
+		method: "seminary.seminary.doctype.student_balance.student_balance.record_payment",
 		args: {
 			student_balance: frm.doc.name,
 			amount: amount,

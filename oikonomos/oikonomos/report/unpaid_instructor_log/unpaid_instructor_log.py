@@ -16,87 +16,87 @@ from frappe.utils import getdate, today
 
 
 def execute(filters=None):
-    filters = filters or {}
-    columns = _columns()
-    data = _rows(filters)
-    return columns, data
+	filters = filters or {}
+	columns = _columns()
+	data = _rows(filters)
+	return columns, data
 
 
 def _columns():
-    return [
-        {
-            "label": _("Instructor"),
-            "fieldtype": "Link",
-            "options": "Instructor",
-            "fieldname": "instructor",
-            "width": 160,
-        },
-        {
-            "label": _("Course"),
-            "fieldtype": "Link",
-            "options": "Course Schedule",
-            "fieldname": "course",
-            "width": 200,
-        },
-        {
-            "label": _("Academic Term"),
-            "fieldtype": "Link",
-            "options": "Academic Term",
-            "fieldname": "academic_term",
-            "width": 140,
-        },
-        {
-            "label": _("Category"),
-            "fieldtype": "Link",
-            "options": "Instructor Category",
-            "fieldname": "instructor_category",
-            "width": 140,
-        },
-        {
-            "label": _("Students"),
-            "fieldtype": "Int",
-            "fieldname": "n_students",
-            "width": 80,
-        },
-        {
-            "label": _("Term End"),
-            "fieldtype": "Date",
-            "fieldname": "term_end_date",
-            "width": 100,
-        },
-        {
-            "label": _("% Paid"),
-            "fieldtype": "Percent",
-            "fieldname": "paid_portion",
-            "width": 80,
-        },
-        {
-            "label": _("Log Row"),
-            "fieldtype": "Data",
-            "fieldname": "log_name",
-            "width": 220,
-        },
-    ]
+	return [
+		{
+			"label": _("Instructor"),
+			"fieldtype": "Link",
+			"options": "Instructor",
+			"fieldname": "instructor",
+			"width": 160,
+		},
+		{
+			"label": _("Course"),
+			"fieldtype": "Link",
+			"options": "Course Schedule",
+			"fieldname": "course",
+			"width": 200,
+		},
+		{
+			"label": _("Academic Term"),
+			"fieldtype": "Link",
+			"options": "Academic Term",
+			"fieldname": "academic_term",
+			"width": 140,
+		},
+		{
+			"label": _("Category"),
+			"fieldtype": "Link",
+			"options": "Instructor Category",
+			"fieldname": "instructor_category",
+			"width": 140,
+		},
+		{
+			"label": _("Students"),
+			"fieldtype": "Int",
+			"fieldname": "n_students",
+			"width": 80,
+		},
+		{
+			"label": _("Term End"),
+			"fieldtype": "Date",
+			"fieldname": "term_end_date",
+			"width": 100,
+		},
+		{
+			"label": _("% Paid"),
+			"fieldtype": "Percent",
+			"fieldname": "paid_portion",
+			"width": 80,
+		},
+		{
+			"label": _("Log Row"),
+			"fieldtype": "Data",
+			"fieldname": "log_name",
+			"width": 220,
+		},
+	]
 
 
 def _rows(filters):
-    conditions = ["term.term_end_date < %(today)s"]
-    params = {"today": filters.get("as_of") or today()}
+	conditions = ["term.term_end_date < %(today)s"]
+	params = {"today": filters.get("as_of") or today()}
 
-    if filters.get("instructor"):
-        conditions.append("log.parent = %(instructor)s")
-        params["instructor"] = filters["instructor"]
-    if filters.get("academic_term"):
-        conditions.append("log.academic_term = %(academic_term)s")
-        params["academic_term"] = filters["academic_term"]
-    if filters.get("instructor_category"):
-        conditions.append("log.instructor_category = %(instructor_category)s")
-        params["instructor_category"] = filters["instructor_category"]
+	if filters.get("instructor"):
+		conditions.append("log.parent = %(instructor)s")
+		params["instructor"] = filters["instructor"]
+	if filters.get("academic_term"):
+		conditions.append("log.academic_term = %(academic_term)s")
+		params["academic_term"] = filters["academic_term"]
+	if filters.get("instructor_category"):
+		conditions.append("log.instructor_category = %(instructor_category)s")
+		params["instructor_category"] = filters["instructor_category"]
 
-    where = " and ".join(conditions)
+	where = " and ".join(conditions)
 
-    return frappe.db.sql(
-        f"""
+	return frappe.db.sql(
+		f"""
         select
             log.parent as instructor,
             log.course,
@@ -117,6 +117,6 @@ def _rows(filters):
         having paid_portion < 100
         order by term.term_end_date desc, log.parent asc
         """,
-        params,
-        as_dict=True,
-    )
+		params,
+		as_dict=True,
+	)
