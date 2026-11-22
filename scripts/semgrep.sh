@@ -11,7 +11,16 @@ elif [ -z "${CI:-}" ]; then
 	git -C "$RULES" pull --quiet --ff-only 2>/dev/null || true
 fi
 
+# Only findings a change introduces fail: the ones already there are tracked in a decision record
+# and fixed in their own pass. Locally that is against HEAD; CI passes the branch's base.
+BASELINE=()
+BASE="${SEMGREP_BASELINE_REF:-HEAD}"
+if git rev-parse --verify --quiet "$BASE^{commit}" >/dev/null; then
+	BASELINE=(--baseline-commit "$(git rev-parse "$BASE")")
+fi
+
 exec semgrep scan \
+	"${BASELINE[@]}" \
 	--config "./$RULES/rules" \
 	--exclude node_modules \
 	--exclude .history \

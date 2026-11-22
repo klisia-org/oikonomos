@@ -16,6 +16,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          # Semgrep compares against the branch's base, so it needs the history.
+          fetch-depth: 0
 
       - uses: actions/setup-python@v5
         with:
@@ -32,4 +35,10 @@ jobs:
         env:
           # Hooks that need a local bench or docs install.
           SKIP: docs-check-sources,software-manual-check
-        run: pre-commit run --all-files --show-diff-on-failure
+          BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: |
+          # A new branch has no "before": compare with its parent instead.
+          if [ -z "$BASE" ] || [ "$BASE" = "0000000000000000000000000000000000000000" ]; then
+            BASE=$(git rev-parse HEAD~1)
+          fi
+          SEMGREP_BASELINE_REF="$BASE" pre-commit run --all-files --show-diff-on-failure

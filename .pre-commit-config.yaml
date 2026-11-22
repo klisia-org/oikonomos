@@ -60,7 +60,9 @@ repos:
     rev: 1.9.3
     hooks:
       - id: bandit
-        args: ["-c", "bandit.yaml"]
+        language_version: python3.14
+        # Findings already there are in the baseline, tracked in a decision record; new ones fail.
+        args: ["-c", "bandit.yaml", "-b", ".bandit-baseline.json"]
         # Tests assert and use fixed passwords on purpose; scripts are dev tools.
         exclude: '^scripts/|/tests/|/test_[^/]*\.py$'
 
@@ -68,6 +70,7 @@ repos:
     rev: v1.5.0
     hooks:
       - id: detect-secrets
+        language_version: python3.14
         args: ["--baseline", ".secrets.baseline"]
         exclude: 'README\.md|oikonomos/public/frontend/.*|oikonomos/builder_files/.*|.*\.pot?$'
 
@@ -80,6 +83,7 @@ repos:
         # One process: in a fresh checkout (CI) parallel runs would all clone the rules at once.
         require_serial: true
         language: python
+        language_version: python3.14
         additional_dependencies: ["semgrep==1.162.0"]
         types_or: [python, javascript, json]
         exclude: 'oikonomos/public/frontend/|oikonomos/builder_files/|^scripts/|^frontend/|^portal-shell/'
