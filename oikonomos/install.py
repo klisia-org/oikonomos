@@ -16,187 +16,187 @@ from frappe.custom.doctype.custom_field.custom_field import create_custom_fields
 
 
 def before_install():
-    # Oikonomos requires ERPNext (required_apps) and its billing flows need a set
-    # up ERPNext (Company, Fiscal Year, Price Lists). Verify before installing.
-    check_erpnext()
+	# Oikonomos requires ERPNext (required_apps) and its billing flows need a set
+	# up ERPNext (Company, Fiscal Year, Price Lists). Verify before installing.
+	check_erpnext()
 
 
 def after_install():
-    setup_erpnext_groups()
-    ensure_custom_fields()
-    # Adopting billing on a seminary that already has facilities: mirror them
-    # (no-op while the sync toggle is off).
-    from oikonomos.financial import locations
+	setup_erpnext_groups()
+	ensure_custom_fields()
+	# Adopting billing on a seminary that already has facilities: mirror them
+	# (no-op while the sync toggle is off).
+	from oikonomos.financial import locations
 
-    locations.backfill()
+	locations.backfill()
 
 
 def after_sync():
-    # Seeding runs here rather than in after_install because frappe's
-    # install_app calls after_install *before* sync_fixtures
-    # (frappe/installer.py). The seeded Fee Categories link to Trigger Fee
-    # Events rows that only exist once our fixtures are synced, so on a fresh
-    # site the seed died with "Could not find Event to charge: Course
-    # Enrollment". Existing benches never showed it because an earlier migrate
-    # had already loaded the fixtures. after_migrate needs no change: migrate
-    # syncs fixtures before its after_migrate hooks.
-    _seed()
-    # Adopting billing on an existing (previously Frappe-only) seminary: give
-    # already-created students/enrollments their billing scaffolding so prior
-    # records are billable. No-op on a fresh install. Idempotent; creates no
-    # invoices.
-    _backfill()
+	# Seeding runs here rather than in after_install because frappe's
+	# install_app calls after_install *before* sync_fixtures
+	# (frappe/installer.py). The seeded Fee Categories link to Trigger Fee
+	# Events rows that only exist once our fixtures are synced, so on a fresh
+	# site the seed died with "Could not find Event to charge: Course
+	# Enrollment". Existing benches never showed it because an earlier migrate
+	# had already loaded the fixtures. after_migrate needs no change: migrate
+	# syncs fixtures before its after_migrate hooks.
+	_seed()
+	# Adopting billing on an existing (previously Frappe-only) seminary: give
+	# already-created students/enrollments their billing scaffolding so prior
+	# records are billable. No-op on a fresh install. Idempotent; creates no
+	# invoices.
+	_backfill()
 
 
 def after_migrate():
-    setup_erpnext_groups()
-    ensure_custom_fields()
-    _seed()
+	setup_erpnext_groups()
+	ensure_custom_fields()
+	_seed()
 
 
 def _seed():
-    from oikonomos.financial.seed import seed_billing_config
+	from oikonomos.financial.seed import seed_billing_config
 
-    seed_billing_config()
+	seed_billing_config()
 
 
 def _backfill():
-    from oikonomos.financial.backfill import backfill_billing_identities
+	from oikonomos.financial.backfill import backfill_billing_identities
 
-    backfill_billing_identities()
+	backfill_billing_identities()
 
 
 def check_erpnext():
-    """Block install unless ERPNext is installed and its Setup Wizard is complete
-    (relocated from seminary — seminary itself is now Frappe-only)."""
-    from frappe import _
+	"""Block install unless ERPNext is installed and its Setup Wizard is complete
+	(relocated from seminary — seminary itself is now Frappe-only)."""
+	from frappe import _
 
-    if "erpnext" not in frappe.get_installed_apps():
-        frappe.throw(
-            _("ERPNext must be installed before installing Oikonomos"),
-            title=_("Missing Dependency"),
-        )
-    errors = []
-    if not frappe.get_all("Company", limit=1, pluck="name"):
-        errors.append(_("No Company found. Complete the ERPNext Setup Wizard first."))
-    if not frappe.db.count("Fiscal Year"):
-        errors.append(_("No Fiscal Year found."))
-    if not frappe.db.get_value("Price List", {"selling": 1, "enabled": 1}, "name"):
-        errors.append(_("No active Selling Price List found."))
-    if errors:
-        frappe.throw(
-            _("ERPNext setup is incomplete: {0}").format(" ".join(errors)),
-            title=_("Setup Incomplete"),
-        )
+	if "erpnext" not in frappe.get_installed_apps():
+		frappe.throw(
+			_("ERPNext must be installed before installing Oikonomos"),
+			title=_("Missing Dependency"),
+		)
+	errors = []
+	if not frappe.get_all("Company", limit=1, pluck="name"):
+		errors.append(_("No Company found. Complete the ERPNext Setup Wizard first."))
+	if not frappe.db.count("Fiscal Year"):
+		errors.append(_("No Fiscal Year found."))
+	if not frappe.db.get_value("Price List", {"selling": 1, "enabled": 1}, "name"):
+		errors.append(_("No active Selling Price List found."))
+	if errors:
+		frappe.throw(
+			_("ERPNext setup is incomplete: {0}").format(" ".join(errors)),
+			title=_("Setup Incomplete"),
+		)
 
 
 def setup_erpnext_groups():
-    """Create the ERPNext groups seminary billing relies on (relocated from
-    seminary.install.setup_fixtures). Idempotent via make_records."""
-    from frappe.desk.page.setup_wizard.setup_wizard import make_records
+	"""Create the ERPNext groups seminary billing relies on (relocated from
+	seminary.install.setup_fixtures). Idempotent via make_records."""
+	from frappe.desk.page.setup_wizard.setup_wizard import make_records
 
-    default_price_list = frappe.db.get_value(
-        "Price List", {"selling": 1, "enabled": 1}, "name", order_by="creation asc"
-    )
-    customer_groups = [
-        "Student",
-        "Donor",
-        "Church",
-        "Denomination",
-        "Seminary",
-        "Para-church Organization",
-        "Alumni",
-        "Board Member",
-        "Volunteer",
-    ]
-    records = [{"doctype": "Item Group", "item_group_name": "Tuition"}]
-    records += [
-        {
-            "doctype": "Customer Group",
-            "customer_group_name": g,
-            "default_price_list": default_price_list,
-        }
-        for g in customer_groups
-    ]
-    records += [
-        {"doctype": "UOM", "uom_name": "Academic Event", "must_be_whole_number": 0},
-        {"doctype": "UOM", "uom_name": "Credit hour", "must_be_whole_number": 0},
-        {"doctype": "Supplier Group", "supplier_group_name": "Instructor"},
-    ]
-    make_records(records)
+	default_price_list = frappe.db.get_value(
+		"Price List", {"selling": 1, "enabled": 1}, "name", order_by="creation asc"
+	)
+	customer_groups = [
+		"Student",
+		"Donor",
+		"Church",
+		"Denomination",
+		"Seminary",
+		"Para-church Organization",
+		"Alumni",
+		"Board Member",
+		"Volunteer",
+	]
+	records = [{"doctype": "Item Group", "item_group_name": "Tuition"}]
+	records += [
+		{
+			"doctype": "Customer Group",
+			"customer_group_name": g,
+			"default_price_list": default_price_list,
+		}
+		for g in customer_groups
+	]
+	records += [
+		{"doctype": "UOM", "uom_name": "Academic Event", "must_be_whole_number": 0},
+		{"doctype": "UOM", "uom_name": "Credit hour", "must_be_whole_number": 0},
+		{"doctype": "Supplier Group", "supplier_group_name": "Instructor"},
+	]
+	make_records(records)
 
 
 # Seminary's link/marker fields on Sales Invoice. custom_student is created by
 # the custom/ sync and is the insert_after anchor for custom_cei, so it exists
 # before this runs on migrate.
 SALES_INVOICE_CUSTOM_FIELDS = {
-    "Sales Invoice": [
-        {
-            "fieldname": "custom_cei",
-            "fieldtype": "Link",
-            "label": "Course Enrollment Individual",
-            "options": "Course Enrollment Individual",
-            "insert_after": "custom_student",
-            "read_only": 1,
-        },
-        {
-            "fieldname": "custom_graduation_request",
-            "fieldtype": "Link",
-            "label": "Graduation Request",
-            "options": "Graduation Request",
-            "insert_after": "custom_cei",
-            "read_only": 1,
-        },
-        {
-            "fieldname": "seminary_trigger",
-            "fieldtype": "Data",
-            "label": "Seminary Trigger",
-            "insert_after": "posting_date",
-            "read_only": 1,
-            "hidden": 1,
-        },
-        {
-            "fieldname": "seminary_summary",
-            "fieldtype": "Data",
-            "label": "Summary",
-            "insert_after": "seminary_trigger",
-            "read_only": 1,
-        },
-    ],
+	"Sales Invoice": [
+		{
+			"fieldname": "custom_cei",
+			"fieldtype": "Link",
+			"label": "Course Enrollment Individual",
+			"options": "Course Enrollment Individual",
+			"insert_after": "custom_student",
+			"read_only": 1,
+		},
+		{
+			"fieldname": "custom_graduation_request",
+			"fieldtype": "Link",
+			"label": "Graduation Request",
+			"options": "Graduation Request",
+			"insert_after": "custom_cei",
+			"read_only": 1,
+		},
+		{
+			"fieldname": "seminary_trigger",
+			"fieldtype": "Data",
+			"label": "Seminary Trigger",
+			"insert_after": "posting_date",
+			"read_only": 1,
+			"hidden": 1,
+		},
+		{
+			"fieldname": "seminary_summary",
+			"fieldtype": "Data",
+			"label": "Summary",
+			"insert_after": "seminary_trigger",
+			"read_only": 1,
+		},
+	],
 }
 
 
 # Partners that are also billed (sponsorship, placement fee) link a Customer.
 PARTNER_CUSTOM_FIELDS = {
-    "Partner Organization": [
-        {
-            "fieldname": "links_section",
-            "fieldtype": "Section Break",
-            "label": "System Links",
-            "insert_after": "doctrinal_statement",
-        },
-        {
-            "fieldname": "customer",
-            "fieldtype": "Link",
-            "label": "Customer",
-            "options": "Customer",
-            "insert_after": "links_section",
-            "description": "Optional. Link a Customer only when this partner is "
-            "also billed (sponsorship, placement fee). Leave blank for a pure "
-            "relationship — we never auto-create a Customer.",
-        },
-    ],
-    "Partner Seminary": [
-        {
-            "fieldname": "customer",
-            "fieldtype": "Link",
-            "label": "Customer",
-            "options": "Customer",
-            "insert_after": "country",
-            "description": "Optional link to a Customer record for registering "
-            "contacts and other partner-institution information.",
-        },
-    ],
+	"Partner Organization": [
+		{
+			"fieldname": "links_section",
+			"fieldtype": "Section Break",
+			"label": "System Links",
+			"insert_after": "doctrinal_statement",
+		},
+		{
+			"fieldname": "customer",
+			"fieldtype": "Link",
+			"label": "Customer",
+			"options": "Customer",
+			"insert_after": "links_section",
+			"description": "Optional. Link a Customer only when this partner is "
+			"also billed (sponsorship, placement fee). Leave blank for a pure "
+			"relationship — we never auto-create a Customer.",
+		},
+	],
+	"Partner Seminary": [
+		{
+			"fieldname": "customer",
+			"fieldtype": "Link",
+			"label": "Customer",
+			"options": "Customer",
+			"insert_after": "country",
+			"description": "Optional link to a Customer record for registering "
+			"contacts and other partner-institution information.",
+		},
+	],
 }
 
 
@@ -206,134 +206,134 @@ PARTNER_CUSTOM_FIELDS = {
 # (reqd omitted) — billing config is validated by oikonomos where needed, not by a
 # hard doctype requirement that would block a seminary that hasn't set up billing.
 SEMINARY_SETTINGS_CUSTOM_FIELDS = {
-    "Seminary Settings": [
-        {
-            "fieldname": "root_asset_location",
-            "fieldtype": "Link",
-            "label": "Root Asset Location",
-            "options": "Location",
-            "insert_after": "sync_rooms_to_asset_locations",
-            "description": (
-                "Optional. Root of the Location subtree the seminary's campuses/"
-                'rooms hang under. Leave blank to auto-create and use a "Seminary '
-                'Locations" root.'
-            ),
-        },
-        {
-            "fieldname": "accounts_section",
-            "fieldtype": "Section Break",
-            "label": "Accounts",
-            "insert_after": "grade_close_offset_days",
-        },
-        {
-            "fieldname": "receivable_account",
-            "fieldtype": "Link",
-            "label": "Receivable Account",
-            "options": "Account",
-            "insert_after": "accounts_section",
-        },
-        {
-            "fieldname": "column_break_wmyg",
-            "fieldtype": "Column Break",
-            "insert_after": "receivable_account",
-        },
-        {
-            "fieldname": "company",
-            "fieldtype": "Link",
-            "label": "Company",
-            "options": "Company",
-            "insert_after": "column_break_wmyg",
-        },
-        {
-            "fieldname": "income_account",
-            "fieldtype": "Link",
-            "label": "Income Account",
-            "options": "Account",
-            "insert_after": "company",
-        },
-        {
-            "fieldname": "cost_center",
-            "fieldtype": "Link",
-            "label": "Cost Center",
-            "options": "Cost Center",
-            "insert_after": "income_account",
-        },
-        {
-            "fieldname": "scholarship_cc",
-            "fieldtype": "Link",
-            "label": "Scholarship - Cost Center",
-            "options": "Cost Center",
-            "insert_after": "cost_center",
-        },
-        {
-            "fieldname": "scholarship_cust",
-            "fieldtype": "Link",
-            "label": "Scholarship - Customer",
-            "options": "Customer",
-            "insert_after": "scholarship_cc",
-            "description": "This customer will be used in all Sales Invoices of Scholarships.",
-        },
-        {
-            "fieldname": "payment_gateway",
-            "fieldtype": "Link",
-            "label": "Payment Gateway",
-            "options": "Payment Gateway",
-            "insert_after": "section_break_fxlm",
-        },
-    ],
+	"Seminary Settings": [
+		{
+			"fieldname": "root_asset_location",
+			"fieldtype": "Link",
+			"label": "Root Asset Location",
+			"options": "Location",
+			"insert_after": "sync_rooms_to_asset_locations",
+			"description": (
+				"Optional. Root of the Location subtree the seminary's campuses/"
+				'rooms hang under. Leave blank to auto-create and use a "Seminary '
+				'Locations" root.'
+			),
+		},
+		{
+			"fieldname": "accounts_section",
+			"fieldtype": "Section Break",
+			"label": "Accounts",
+			"insert_after": "grade_close_offset_days",
+		},
+		{
+			"fieldname": "receivable_account",
+			"fieldtype": "Link",
+			"label": "Receivable Account",
+			"options": "Account",
+			"insert_after": "accounts_section",
+		},
+		{
+			"fieldname": "column_break_wmyg",
+			"fieldtype": "Column Break",
+			"insert_after": "receivable_account",
+		},
+		{
+			"fieldname": "company",
+			"fieldtype": "Link",
+			"label": "Company",
+			"options": "Company",
+			"insert_after": "column_break_wmyg",
+		},
+		{
+			"fieldname": "income_account",
+			"fieldtype": "Link",
+			"label": "Income Account",
+			"options": "Account",
+			"insert_after": "company",
+		},
+		{
+			"fieldname": "cost_center",
+			"fieldtype": "Link",
+			"label": "Cost Center",
+			"options": "Cost Center",
+			"insert_after": "income_account",
+		},
+		{
+			"fieldname": "scholarship_cc",
+			"fieldtype": "Link",
+			"label": "Scholarship - Cost Center",
+			"options": "Cost Center",
+			"insert_after": "cost_center",
+		},
+		{
+			"fieldname": "scholarship_cust",
+			"fieldtype": "Link",
+			"label": "Scholarship - Customer",
+			"options": "Customer",
+			"insert_after": "scholarship_cc",
+			"description": "This customer will be used in all Sales Invoices of Scholarships.",
+		},
+		{
+			"fieldname": "payment_gateway",
+			"fieldtype": "Link",
+			"label": "Payment Gateway",
+			"options": "Payment Gateway",
+			"insert_after": "section_break_fxlm",
+		},
+	],
 }
 
 
 def setup_sales_invoice_permissions():
-    """Grant the Student and Alumni roles read + print access to Sales Invoice.
+	"""Grant the Student and Alumni roles read + print access to Sales Invoice.
 
-    Row-level access is scoped to the user's own linked Student record by
-    oikonomos.financial.sales_invoice_permissions. Idempotent."""
-    from frappe.permissions import add_permission, update_permission_property
+	Row-level access is scoped to the user's own linked Student record by
+	oikonomos.financial.sales_invoice_permissions. Idempotent."""
+	from frappe.permissions import add_permission, update_permission_property
 
-    if not frappe.db.exists("DocType", "Sales Invoice"):
-        return
-    for role in ("Student", "Alumni"):
-        if not frappe.db.exists("Role", role):
-            continue
-        add_permission("Sales Invoice", role, 0)
-        update_permission_property("Sales Invoice", role, 0, "read", 1)
-        update_permission_property("Sales Invoice", role, 0, "print", 1)
-    frappe.db.commit()
+	if not frappe.db.exists("DocType", "Sales Invoice"):
+		return
+	for role in ("Student", "Alumni"):
+		if not frappe.db.exists("Role", role):
+			continue
+		add_permission("Sales Invoice", role, 0)
+		update_permission_property("Sales Invoice", role, 0, "read", 1)
+		update_permission_property("Sales Invoice", role, 0, "print", 1)
+	frappe.db.commit()
 
 
 def before_uninstall():
-    # Hide the billing UI again when the bridge is removed.
-    if frappe.db.exists("DocType", "Seminary Settings"):
-        frappe.db.set_single_value("Seminary Settings", "has_oikonomos", 0)
+	# Hide the billing UI again when the bridge is removed.
+	if frappe.db.exists("DocType", "Seminary Settings"):
+		frappe.db.set_single_value("Seminary Settings", "has_oikonomos", 0)
 
 
 def ensure_custom_fields():
-    # Flag the billing bridge as present so seminary's gated billing fields/UI show.
-    frappe.db.set_single_value("Seminary Settings", "has_oikonomos", 1)
-    create_custom_fields(SALES_INVOICE_CUSTOM_FIELDS, ignore_validate=True)
-    # Before the Seminary Settings fields: root_asset_location sits after the
-    # sync toggle these create.
-    from oikonomos.financial import locations
+	# Flag the billing bridge as present so seminary's gated billing fields/UI show.
+	frappe.db.set_single_value("Seminary Settings", "has_oikonomos", 1)
+	create_custom_fields(SALES_INVOICE_CUSTOM_FIELDS, ignore_validate=True)
+	# Before the Seminary Settings fields: root_asset_location sits after the
+	# sync toggle these create.
+	from oikonomos.financial import locations
 
-    locations.setup_custom_fields()
-    create_custom_fields(SEMINARY_SETTINGS_CUSTOM_FIELDS, ignore_validate=True)
-    create_custom_fields(PARTNER_CUSTOM_FIELDS, ignore_validate=True)
-    # Instructor Employee/Supplier links.
-    from oikonomos.financial.instructor import setup_custom_fields as setup_instructor
+	locations.setup_custom_fields()
+	create_custom_fields(SEMINARY_SETTINGS_CUSTOM_FIELDS, ignore_validate=True)
+	create_custom_fields(PARTNER_CUSTOM_FIELDS, ignore_validate=True)
+	# Instructor Employee/Supplier links.
+	from oikonomos.financial.instructor import setup_custom_fields as setup_instructor
 
-    setup_instructor()
-    # Customer<->Person link + Student billing-identity fields.
-    from oikonomos.financial.customer_person import setup_custom_fields as setup_cp
+	setup_instructor()
+	# Customer<->Person link + Student billing-identity fields.
+	from oikonomos.financial.customer_person import setup_custom_fields as setup_cp
 
-    setup_cp()
-    # Program Level readmission-fee policy fields (Link → Fee Category).
-    from oikonomos.financial.readmission import setup_custom_fields as setup_readmission
+	setup_cp()
+	# Program Level readmission-fee policy fields (Link → Fee Category).
+	from oikonomos.financial.readmission import setup_custom_fields as setup_readmission
 
-    setup_readmission()
-    # Instructor payroll fields/components — only when HRMS is on (no-op otherwise).
-    from oikonomos.financial.salary_slip import provision_payroll_if_enabled
+	setup_readmission()
+	# Instructor payroll fields/components — only when HRMS is on (no-op otherwise).
+	from oikonomos.financial.salary_slip import provision_payroll_if_enabled
 
-    provision_payroll_if_enabled()
-    setup_sales_invoice_permissions()
-    frappe.db.commit()
+	provision_payroll_if_enabled()
+	setup_sales_invoice_permissions()
+	frappe.db.commit()

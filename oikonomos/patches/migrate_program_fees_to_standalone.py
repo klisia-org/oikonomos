@@ -9,14 +9,14 @@ import frappe
 
 
 def execute():
-    if not frappe.db.has_column("Program Fees", "program"):
-        return
-    frappe.db.sql(
-        """
+	if not frappe.db.has_column("Program Fees", "program"):
+		return
+	frappe.db.sql(
+		"""
         UPDATE `tabProgram Fees`
         SET program = parent
         WHERE (program IS NULL OR program = '')
           AND parent IS NOT NULL AND parent != ''
         """
-    )
-    frappe.db.commit()
+	)
+	frappe.db.commit()

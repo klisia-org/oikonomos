@@ -14,26 +14,22 @@ from oikonomos.financial.customer_person import link_customer, setup_custom_fiel
 
 
 def execute():
-    setup_custom_fields()
+	setup_custom_fields()
 
-    linked = 0
-    for p in frappe.get_all(
-        "Person", filters={"customer": ("is", "set")}, fields=["name", "customer"]
-    ):
-        if not frappe.db.get_value("Customer", p.customer, "person"):
-            frappe.db.set_value(
-                "Customer", p.customer, "person", p.name, update_modified=False
-            )
-            linked += 1
+	linked = 0
+	for p in frappe.get_all("Person", filters={"customer": ("is", "set")}, fields=["name", "customer"]):
+		if not frappe.db.get_value("Customer", p.customer, "person"):
+			frappe.db.set_value("Customer", p.customer, "person", p.name, update_modified=False)
+			linked += 1
 
-    for doctype in ("Student", "Student Applicant"):
-        rows = frappe.get_all(
-            doctype,
-            filters={"person": ("is", "set"), "customer": ("is", "set")},
-            fields=["person", "customer"],
-        )
-        for row in rows:
-            link_customer(row.person, row.customer)
+	for doctype in ("Student", "Student Applicant"):
+		rows = frappe.get_all(
+			doctype,
+			filters={"person": ("is", "set"), "customer": ("is", "set")},
+			fields=["person", "customer"],
+		)
+		for row in rows:
+			link_customer(row.person, row.customer)
 
-    frappe.db.commit()
-    print(f"Customer.person backfilled ({linked} direct Person links).")
+	frappe.db.commit()
+	print(f"Customer.person backfilled ({linked} direct Person links).")

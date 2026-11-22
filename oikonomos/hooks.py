@@ -29,13 +29,13 @@ seminary_demo_cleanup = ["oikonomos.financial.demo.remove_demo_billing"]
 
 # Fixtures owned by oikonomos (relocated from seminary with their doctypes).
 fixtures = [
-    "Trigger Fee Events",
-    # UOM "Fee" (billing unit). Fee Items + Payment Terms are NOT fixtured — they
-    # are seeded create-once by oikonomos.financial.seed so a seminary's edits
-    # survive migrate.
-    {"dt": "UOM", "filters": [["name", "=", "Fee"]]},
-    {"dt": "Print Format", "filters": [["name", "=", "Seminary Sales Invoice"]]},
-    {"dt": "Workflow", "filters": [["name", "=", "Scholarship Award Lifecycle"]]},
+	"Trigger Fee Events",
+	# UOM "Fee" (billing unit). Fee Items + Payment Terms are NOT fixtured — they
+	# are seeded create-once by oikonomos.financial.seed so a seminary's edits
+	# survive migrate.
+	{"dt": "UOM", "filters": [["name", "=", "Fee"]]},
+	{"dt": "Print Format", "filters": [["name", "=", "Seminary Sales Invoice"]]},
+	{"dt": "Workflow", "filters": [["name", "=", "Scholarship Award Lifecycle"]]},
 ]
 
 # Each item in the list will be shown as an app in the apps page
@@ -74,10 +74,10 @@ fixtures = [
 # Form customizations on ERPNext doctypes (Customer, Item Price) and on the
 # oikonomos-owned billing fields of the seminary's Seminary Settings.
 doctype_js = {
-    "Seminary Settings": "public/js/seminary_settings.js",
-    "Instructor": "public/js/instructor.js",
-    "Customer": "public/js/customer.js",
-    "Item Price": "public/js/item_price.js",
+	"Seminary Settings": "public/js/seminary_settings.js",
+	"Instructor": "public/js/instructor.js",
+	"Customer": "public/js/customer.js",
+	"Item Price": "public/js/item_price.js",
 }
 # doctype_js = {"doctype" : "public/js/doctype.js"}
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
@@ -185,133 +185,133 @@ before_uninstall = "oikonomos.install.before_uninstall"
 # Override ERPNext's Payment Request to route Student Balance payments through
 # the seminary gateway flow (relocated from seminary).
 override_doctype_class = {
-    "Payment Request": "oikonomos.financial.payment_request.SeminaryPaymentRequest",
+	"Payment Request": "oikonomos.financial.payment_request.SeminaryPaymentRequest",
 }
 
 # Hooks that bill or create customers go through oikonomos.financial.active,
 # so they act only while oikonomos is the active billing app (another, such as
 # tamias, may be installed beside it).
 doc_events = {
-    "Culminating Project Extension": {
-        "on_submit": "oikonomos.financial.active.extension_on_submit",
-        "on_cancel": "oikonomos.financial.active.extension_on_cancel",
-    },
-    "Graduation Request": {
-        "on_submit": "oikonomos.financial.active.graduation_on_submit",
-        "on_cancel": "oikonomos.financial.active.graduation_on_cancel",
-    },
-    "Program Enrollment": {
-        # before_submit so payer rows exist before seminary's on_submit fulfiller
-        # auto-enrolls CEIs that invoice against them.
-        "before_submit": "oikonomos.financial.active.prepare_enrollment_payers",
-    },
-    "Course Enrollment Individual": {
-        "on_cancel": "oikonomos.financial.active.on_cei_cancel",
-    },
-    "Student Applicant": {
-        "after_insert": "oikonomos.financial.active.on_applicant_insert",
-    },
-    # Person<->Customer mirror teardown. Both halves are read-only custom fields,
-    # so without these on_trash handlers neither side is deletable and there is no
-    # manual escape. Frappe runs on_trash before its link check, so clearing here
-    # is what lets the delete through (ADR 042 addendum, 2026-09-22).
-    "Customer": {
-        "on_update": "oikonomos.financial.customer_person.on_customer_update",
-        "on_trash": "oikonomos.financial.customer_person.on_customer_trash",
-    },
-    "Person": {
-        "on_trash": "oikonomos.financial.customer_person.on_person_trash",
-    },
-    # Student Balance lifecycle (doctype relocated from seminary). A balance is
-    # opened for every Student and tracks their submitted Sales Invoices.
-    "Student": {
-        "after_insert": "oikonomos.financial.active.create_student_balance",
-        "on_update": "oikonomos.financial.active.on_student_update",
-    },
-    # Sales Invoice drives both the Student Balance ledger and payment-reactive
-    # academic advancement (CEI / Graduation Request). The advancement handlers
-    # trace the SI back to its academic doc and call seminary's entry point.
-    "Sales Invoice": {
-        "on_submit": [
-            "oikonomos.oikonomos.doctype.student_balance.student_balance.add_invoice_to_student_balance",
-            "oikonomos.financial.cei_payment.maybe_advance_cei_on_payment",
-            "oikonomos.financial.graduation.on_si_submit",
-        ],
-        "on_update_after_submit": [
-            "oikonomos.oikonomos.doctype.student_balance.student_balance.refresh_balance_on_invoice_update",
-            "oikonomos.financial.cei_payment.maybe_advance_cei_on_payment",
-            "oikonomos.financial.graduation.on_si_update_after_submit",
-        ],
-        "on_cancel": [
-            "oikonomos.oikonomos.doctype.student_balance.student_balance.remove_cancelled_invoice_from_balance",
-            "oikonomos.financial.cei_payment.maybe_notify_registrar_on_invoice_cancel",
-        ],
-    },
-    # Payment Entry posting is what actually moves outstanding_amount (ERPNext uses
-    # db.set_value, bypassing SI's on_update_after_submit), so payment-driven
-    # advancement hooks here directly.
-    "Payment Entry": {
-        "on_submit": [
-            "oikonomos.financial.cei_payment.on_payment_entry_submit",
-            "oikonomos.financial.graduation.on_payment_entry_submit",
-        ],
-        "on_cancel": [
-            "oikonomos.financial.cei_payment.on_payment_entry_cancel",
-            "oikonomos.financial.graduation.on_payment_entry_cancel",
-        ],
-    },
-    # Instructor payroll (Salary Slip + Instructor Log Payment, relocated from
-    # seminary). Gated on HRMS at runtime via _hrms_enabled.
-    "Salary Slip": {
-        "before_validate": "oikonomos.financial.salary_slip.populate_instructor_summary",
-        "on_submit": "oikonomos.financial.salary_slip.post_submit_instructor_log_payments",
-        "on_cancel": "oikonomos.financial.salary_slip.cancel_instructor_log_payments",
-    },
-    # Provision payroll custom fields when instructor payroll is toggled on.
-    "Seminary Settings": {
-        "on_update": [
-            "oikonomos.financial.salary_slip.on_seminary_settings_update",
-            "oikonomos.financial.locations.on_seminary_settings_update",
-        ],
-    },
-    # Campus/Building/Room → ERPNext Location mirror (seminary ADR 039).
-    "Campus": {
-        "on_update": "oikonomos.financial.locations.on_facility_update",
-        "on_trash": "oikonomos.financial.locations.on_facility_trash",
-    },
-    "Building": {
-        "on_update": "oikonomos.financial.locations.on_facility_update",
-        "on_trash": "oikonomos.financial.locations.on_facility_trash",
-    },
-    "Room": {
-        "on_update": "oikonomos.financial.locations.on_facility_update",
-        "on_trash": "oikonomos.financial.locations.on_facility_trash",
-    },
-    "Instructor": {
-        "validate": "oikonomos.financial.instructor.validate",
-    },
+	"Culminating Project Extension": {
+		"on_submit": "oikonomos.financial.active.extension_on_submit",
+		"on_cancel": "oikonomos.financial.active.extension_on_cancel",
+	},
+	"Graduation Request": {
+		"on_submit": "oikonomos.financial.active.graduation_on_submit",
+		"on_cancel": "oikonomos.financial.active.graduation_on_cancel",
+	},
+	"Program Enrollment": {
+		# before_submit so payer rows exist before seminary's on_submit fulfiller
+		# auto-enrolls CEIs that invoice against them.
+		"before_submit": "oikonomos.financial.active.prepare_enrollment_payers",
+	},
+	"Course Enrollment Individual": {
+		"on_cancel": "oikonomos.financial.active.on_cei_cancel",
+	},
+	"Student Applicant": {
+		"after_insert": "oikonomos.financial.active.on_applicant_insert",
+	},
+	# Person<->Customer mirror teardown. Both halves are read-only custom fields,
+	# so without these on_trash handlers neither side is deletable and there is no
+	# manual escape. Frappe runs on_trash before its link check, so clearing here
+	# is what lets the delete through (ADR 042 addendum, 2026-09-22).
+	"Customer": {
+		"on_update": "oikonomos.financial.customer_person.on_customer_update",
+		"on_trash": "oikonomos.financial.customer_person.on_customer_trash",
+	},
+	"Person": {
+		"on_trash": "oikonomos.financial.customer_person.on_person_trash",
+	},
+	# Student Balance lifecycle (doctype relocated from seminary). A balance is
+	# opened for every Student and tracks their submitted Sales Invoices.
+	"Student": {
+		"after_insert": "oikonomos.financial.active.create_student_balance",
+		"on_update": "oikonomos.financial.active.on_student_update",
+	},
+	# Sales Invoice drives both the Student Balance ledger and payment-reactive
+	# academic advancement (CEI / Graduation Request). The advancement handlers
+	# trace the SI back to its academic doc and call seminary's entry point.
+	"Sales Invoice": {
+		"on_submit": [
+			"oikonomos.oikonomos.doctype.student_balance.student_balance.add_invoice_to_student_balance",
+			"oikonomos.financial.cei_payment.maybe_advance_cei_on_payment",
+			"oikonomos.financial.graduation.on_si_submit",
+		],
+		"on_update_after_submit": [
+			"oikonomos.oikonomos.doctype.student_balance.student_balance.refresh_balance_on_invoice_update",
+			"oikonomos.financial.cei_payment.maybe_advance_cei_on_payment",
+			"oikonomos.financial.graduation.on_si_update_after_submit",
+		],
+		"on_cancel": [
+			"oikonomos.oikonomos.doctype.student_balance.student_balance.remove_cancelled_invoice_from_balance",
+			"oikonomos.financial.cei_payment.maybe_notify_registrar_on_invoice_cancel",
+		],
+	},
+	# Payment Entry posting is what actually moves outstanding_amount (ERPNext uses
+	# db.set_value, bypassing SI's on_update_after_submit), so payment-driven
+	# advancement hooks here directly.
+	"Payment Entry": {
+		"on_submit": [
+			"oikonomos.financial.cei_payment.on_payment_entry_submit",
+			"oikonomos.financial.graduation.on_payment_entry_submit",
+		],
+		"on_cancel": [
+			"oikonomos.financial.cei_payment.on_payment_entry_cancel",
+			"oikonomos.financial.graduation.on_payment_entry_cancel",
+		],
+	},
+	# Instructor payroll (Salary Slip + Instructor Log Payment, relocated from
+	# seminary). Gated on HRMS at runtime via _hrms_enabled.
+	"Salary Slip": {
+		"before_validate": "oikonomos.financial.salary_slip.populate_instructor_summary",
+		"on_submit": "oikonomos.financial.salary_slip.post_submit_instructor_log_payments",
+		"on_cancel": "oikonomos.financial.salary_slip.cancel_instructor_log_payments",
+	},
+	# Provision payroll custom fields when instructor payroll is toggled on.
+	"Seminary Settings": {
+		"on_update": [
+			"oikonomos.financial.salary_slip.on_seminary_settings_update",
+			"oikonomos.financial.locations.on_seminary_settings_update",
+		],
+	},
+	# Campus/Building/Room → ERPNext Location mirror (seminary ADR 039).
+	"Campus": {
+		"on_update": "oikonomos.financial.locations.on_facility_update",
+		"on_trash": "oikonomos.financial.locations.on_facility_trash",
+	},
+	"Building": {
+		"on_update": "oikonomos.financial.locations.on_facility_update",
+		"on_trash": "oikonomos.financial.locations.on_facility_trash",
+	},
+	"Room": {
+		"on_update": "oikonomos.financial.locations.on_facility_update",
+		"on_trash": "oikonomos.financial.locations.on_facility_trash",
+	},
+	"Instructor": {
+		"validate": "oikonomos.financial.instructor.validate",
+	},
 }
 
 # Student Balance + Sales Invoice are scoped to the student's own record
 # (relocated from seminary; Sales Invoice is an ERPNext doctype).
 permission_query_conditions = {
-    "Student Balance": "oikonomos.oikonomos.doctype.student_balance.student_balance_permissions.get_permission_query_conditions",
-    "Sales Invoice": "oikonomos.financial.sales_invoice_permissions.get_permission_query_conditions",
+	"Student Balance": "oikonomos.oikonomos.doctype.student_balance.student_balance_permissions.get_permission_query_conditions",
+	"Sales Invoice": "oikonomos.financial.sales_invoice_permissions.get_permission_query_conditions",
 }
 has_permission = {
-    "Student Balance": "oikonomos.oikonomos.doctype.student_balance.student_balance_permissions.has_permission",
-    "Sales Invoice": "oikonomos.financial.sales_invoice_permissions.has_permission",
+	"Student Balance": "oikonomos.oikonomos.doctype.student_balance.student_balance_permissions.has_permission",
+	"Sales Invoice": "oikonomos.financial.sales_invoice_permissions.has_permission",
 }
 
 # Student portal "Financials" page (lists the student's Sales Invoices).
 standard_portal_menu_items = [
-    {
-        "title": "Financials",
-        "route": "/financials",
-        "reference_doctype": "Sales Invoice",
-        "role": "Student",
-        "condition": "frappe.get_all('Sales Invoice', filters={'custom_student': frappe.session.user})",
-    },
+	{
+		"title": "Financials",
+		"route": "/financials",
+		"reference_doctype": "Sales Invoice",
+		"role": "Student",
+		"condition": "frappe.get_all('Sales Invoice', filters={'custom_student': frappe.session.user})",
+	},
 ]
 
 # Scheduled Tasks
@@ -321,11 +321,11 @@ standard_portal_menu_items = [
 # tasks.daily). Gated internally on the seminary `billing_automation_enabled`
 # flag; a Frappe-only seminary never runs it (oikonomos isn't installed).
 scheduler_events = {
-    "daily": [
-        "oikonomos.financial.active.run_billing_automation",
-        # Scholarship retention review (relocated from seminary tasks.daily).
-        "oikonomos.financial.active.review_scholarship_retention",
-    ],
+	"daily": [
+		"oikonomos.financial.active.run_billing_automation",
+		# Scholarship retention review (relocated from seminary tasks.daily).
+		"oikonomos.financial.active.review_scholarship_retention",
+	],
 }
 
 # scheduler_events = {
@@ -442,23 +442,23 @@ scheduler_events = {
 aretenic_report_financials = ["oikonomos.financial.report_financials.report_financials"]
 
 seminary_setup_sections = [
-    {
-        "section": "Fees setup",
-        "after": "Community setup",
-        "icon": "receipt",
-        "links": [
-            {"label": "Fee Category", "link_type": "DocType", "link_to": "Fee Category"},
-            {"label": "Program Fees", "link_type": "DocType", "link_to": "Program Fees"},
-            {"label": "Company", "link_type": "DocType", "link_to": "Company"},
-            {"label": "Fiscal Year", "link_type": "DocType", "link_to": "Fiscal Year"},
-            {"label": "Item", "link_type": "DocType", "link_to": "Item"},
-            {
-                "label": "Payment Terms Template",
-                "link_type": "DocType",
-                "link_to": "Payment Terms Template",
-            },
-            {"label": "Mode of Payment", "link_type": "DocType", "link_to": "Mode of Payment"},
-            {"label": "Accounts Settings", "link_type": "DocType", "link_to": "Accounts Settings"},
-        ],
-    }
+	{
+		"section": "Fees setup",
+		"after": "Community setup",
+		"icon": "receipt",
+		"links": [
+			{"label": "Fee Category", "link_type": "DocType", "link_to": "Fee Category"},
+			{"label": "Program Fees", "link_type": "DocType", "link_to": "Program Fees"},
+			{"label": "Company", "link_type": "DocType", "link_to": "Company"},
+			{"label": "Fiscal Year", "link_type": "DocType", "link_to": "Fiscal Year"},
+			{"label": "Item", "link_type": "DocType", "link_to": "Item"},
+			{
+				"label": "Payment Terms Template",
+				"link_type": "DocType",
+				"link_to": "Payment Terms Template",
+			},
+			{"label": "Mode of Payment", "link_type": "DocType", "link_to": "Mode of Payment"},
+			{"label": "Accounts Settings", "link_type": "DocType", "link_to": "Accounts Settings"},
+		],
+	}
 ]

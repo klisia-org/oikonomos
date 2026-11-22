@@ -36,126 +36,126 @@ from frappe import _
 
 
 def execute(filters=None):
-    filters = filters or {}
-    return _columns(), _rows(filters)
+	filters = filters or {}
+	return _columns(), _rows(filters)
 
 
 def _columns():
-    return [
-        {
-            "label": _("CEI"),
-            "fieldtype": "Link",
-            "options": "Course Enrollment Individual",
-            "fieldname": "cei",
-            "width": 200,
-        },
-        {
-            "label": _("Student"),
-            "fieldtype": "Link",
-            "options": "Student",
-            "fieldname": "student",
-            "width": 160,
-        },
-        {
-            "label": _("Course"),
-            "fieldtype": "Data",
-            "fieldname": "course",
-            "width": 160,
-        },
-        {
-            "label": _("Program"),
-            "fieldtype": "Data",
-            "fieldname": "program",
-            "width": 140,
-        },
-        {
-            "label": _("Marked Paid By"),
-            "fieldtype": "Link",
-            "options": "User",
-            "fieldname": "marked_paid_by",
-            "width": 200,
-        },
-        {
-            "label": _("Marked Paid On"),
-            "fieldtype": "Datetime",
-            "fieldname": "marked_paid_on",
-            "width": 160,
-        },
-        {
-            "label": _("Invoiced"),
-            "fieldtype": "Currency",
-            "fieldname": "total_invoiced",
-            "width": 110,
-        },
-        {
-            "label": _("Paid"),
-            "fieldtype": "Currency",
-            "fieldname": "total_paid",
-            "width": 110,
-        },
-        {
-            "label": _("Paid %"),
-            "fieldtype": "Percent",
-            "fieldname": "paid_percent",
-            "width": 80,
-        },
-        {
-            "label": _("SIs (Submitted)"),
-            "fieldtype": "Int",
-            "fieldname": "si_submitted",
-            "width": 110,
-        },
-        {
-            "label": _("SIs (Cancelled)"),
-            "fieldtype": "Int",
-            "fieldname": "si_cancelled",
-            "width": 110,
-        },
-        {
-            "label": _("SIs (Returns)"),
-            "fieldtype": "Int",
-            "fieldname": "si_returns",
-            "width": 100,
-        },
-        # Hidden field used by the dashboard Number Card (Sum of 1-per-row).
-        {
-            "label": _("Count"),
-            "fieldtype": "Int",
-            "fieldname": "row_count",
-            "width": 1,
-            "hidden": 1,
-        },
-    ]
+	return [
+		{
+			"label": _("CEI"),
+			"fieldtype": "Link",
+			"options": "Course Enrollment Individual",
+			"fieldname": "cei",
+			"width": 200,
+		},
+		{
+			"label": _("Student"),
+			"fieldtype": "Link",
+			"options": "Student",
+			"fieldname": "student",
+			"width": 160,
+		},
+		{
+			"label": _("Course"),
+			"fieldtype": "Data",
+			"fieldname": "course",
+			"width": 160,
+		},
+		{
+			"label": _("Program"),
+			"fieldtype": "Data",
+			"fieldname": "program",
+			"width": 140,
+		},
+		{
+			"label": _("Marked Paid By"),
+			"fieldtype": "Link",
+			"options": "User",
+			"fieldname": "marked_paid_by",
+			"width": 200,
+		},
+		{
+			"label": _("Marked Paid On"),
+			"fieldtype": "Datetime",
+			"fieldname": "marked_paid_on",
+			"width": 160,
+		},
+		{
+			"label": _("Invoiced"),
+			"fieldtype": "Currency",
+			"fieldname": "total_invoiced",
+			"width": 110,
+		},
+		{
+			"label": _("Paid"),
+			"fieldtype": "Currency",
+			"fieldname": "total_paid",
+			"width": 110,
+		},
+		{
+			"label": _("Paid %"),
+			"fieldtype": "Percent",
+			"fieldname": "paid_percent",
+			"width": 80,
+		},
+		{
+			"label": _("SIs (Submitted)"),
+			"fieldtype": "Int",
+			"fieldname": "si_submitted",
+			"width": 110,
+		},
+		{
+			"label": _("SIs (Cancelled)"),
+			"fieldtype": "Int",
+			"fieldname": "si_cancelled",
+			"width": 110,
+		},
+		{
+			"label": _("SIs (Returns)"),
+			"fieldtype": "Int",
+			"fieldname": "si_returns",
+			"width": 100,
+		},
+		# Hidden field used by the dashboard Number Card (Sum of 1-per-row).
+		{
+			"label": _("Count"),
+			"fieldtype": "Int",
+			"fieldname": "row_count",
+			"width": 1,
+			"hidden": 1,
+		},
+	]
 
 
 def _rows(filters):
-    conditions = [
-        "cei.workflow_state IN ('Submitted', 'Concluded')",
-        "cei.docstatus = 1",
-    ]
-    params = {}
+	conditions = [
+		"cei.workflow_state IN ('Submitted', 'Concluded')",
+		"cei.docstatus = 1",
+	]
+	params = {}
 
-    if filters.get("from_date"):
-        conditions.append("mark.creation >= %(from_date)s")
-        params["from_date"] = filters["from_date"]
-    if filters.get("to_date"):
-        # Include the entire to_date day.
-        conditions.append("mark.creation < DATE_ADD(%(to_date)s, INTERVAL 1 DAY)")
-        params["to_date"] = filters["to_date"]
-    if filters.get("marked_paid_by"):
-        conditions.append("mark.owner = %(marked_paid_by)s")
-        params["marked_paid_by"] = filters["marked_paid_by"]
-    if filters.get("program"):
-        conditions.append("cei.program_data = %(program)s")
-        params["program"] = filters["program"]
+	if filters.get("from_date"):
+		conditions.append("mark.creation >= %(from_date)s")
+		params["from_date"] = filters["from_date"]
+	if filters.get("to_date"):
+		# Include the entire to_date day.
+		conditions.append("mark.creation < DATE_ADD(%(to_date)s, INTERVAL 1 DAY)")
+		params["to_date"] = filters["to_date"]
+	if filters.get("marked_paid_by"):
+		conditions.append("mark.owner = %(marked_paid_by)s")
+		params["marked_paid_by"] = filters["marked_paid_by"]
+	if filters.get("program"):
+		conditions.append("cei.program_data = %(program)s")
+		params["program"] = filters["program"]
 
-    where = " AND ".join(conditions)
+	where = " AND ".join(conditions)
 
-    # `mark` is the latest 'Submitted' workflow comment on the CEI — its
-    # owner/creation identify the "Mark as Paid" actor. `EXISTS (...ap...)`
-    # ensures the CEI sat in Awaiting Payment beforehand, so this isn't a
-    # plain Draft → Submitted transition on a free / no-pay-required doc.
-    sql = f"""
+	# `mark` is the latest 'Submitted' workflow comment on the CEI — its
+	# owner/creation identify the "Mark as Paid" actor. `EXISTS (...ap...)`
+	# ensures the CEI sat in Awaiting Payment beforehand, so this isn't a
+	# plain Draft → Submitted transition on a free / no-pay-required doc.
+	sql = f"""
         SELECT
             cei.name AS cei,
             cei.student_ce AS student,
@@ -220,4 +220,4 @@ def _rows(filters):
         ORDER BY mark.creation DESC
     """
 
-    return frappe.db.sql(sql, params, as_dict=True)
+	return frappe.db.sql(sql, params, as_dict=True)

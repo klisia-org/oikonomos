@@ -23,47 +23,41 @@ import frappe
 
 
 def backfill_billing_identities():
-    _backfill_student_customers()
-    _backfill_enrollment_payers()
-    frappe.db.commit()
+	_backfill_student_customers()
+	_backfill_enrollment_payers()
+	frappe.db.commit()
 
 
 def _backfill_student_customers():
-    """Create the billing Customer for every Student that lacks one, reusing the
-    same path as Student.on_update so the Customer/Contact/Person links match a
-    natively-created student."""
-    from oikonomos.financial.customer_person import on_student_update
+	"""Create the billing Customer for every Student that lacks one, reusing the
+	same path as Student.on_update so the Customer/Contact/Person links match a
+	natively-created student."""
+	from oikonomos.financial.customer_person import on_student_update
 
-    names = frappe.get_all(
-        "Student", filters={"customer": ("is", "not set")}, pluck="name"
-    )
-    for name in names:
-        try:
-            on_student_update(frappe.get_doc("Student", name))
-        except Exception:
-            frappe.log_error(
-                frappe.get_traceback(), f"oikonomos backfill customer {name}"
-            )
+	names = frappe.get_all("Student", filters={"customer": ("is", "not set")}, pluck="name")
+	for name in names:
+		try:
+			on_student_update(frappe.get_doc("Student", name))
+		except Exception:
+			frappe.log_error(frappe.get_traceback(), f"oikonomos backfill customer {name}")
 
 
 def _backfill_enrollment_payers():
-    """Build the payer snapshot (Payers Fee Category PE + rows) for every active
-    submitted Program Enrollment that has none, from the program's current
-    Program Fees — the same builder used at enrollment time. Runs after customer
-    backfill so the payer (the student's Customer) resolves."""
-    from oikonomos.financial.payers import get_payers
+	"""Build the payer snapshot (Payers Fee Category PE + rows) for every active
+	submitted Program Enrollment that has none, from the program's current
+	Program Fees — the same builder used at enrollment time. Runs after customer
+	backfill so the payer (the student's Customer) resolves."""
+	from oikonomos.financial.payers import get_payers
 
-    pes = frappe.get_all(
-        "Program Enrollment",
-        filters={"docstatus": 1, "pgmenrol_active": 1},
-        pluck="name",
-    )
-    for pe_name in pes:
-        if frappe.db.exists("Payers Fee Category PE", {"pf_pe": pe_name}):
-            continue
-        try:
-            get_payers(frappe.get_doc("Program Enrollment", pe_name), None)
-        except Exception:
-            frappe.log_error(
-                frappe.get_traceback(), f"oikonomos backfill payers {pe_name}"
-            )
+	pes = frappe.get_all(
+		"Program Enrollment",
+		filters={"docstatus": 1, "pgmenrol_active": 1},
+		pluck="name",
+	)
+	for pe_name in pes:
+		if frappe.db.exists("Payers Fee Category PE", {"pf_pe": pe_name}):
+			continue
+		try:
+			get_payers(frappe.get_doc("Program Enrollment", pe_name), None)
+		except Exception:
+			frappe.log_error(frappe.get_traceback(), f"oikonomos backfill payers {pe_name}")
