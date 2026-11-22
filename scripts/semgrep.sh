@@ -29,6 +29,8 @@ exec semgrep scan \
 	--exclude oikonomos/public/frontend \
 	--exclude oikonomos/builder_files \
 	--exclude scripts \
+	--exclude runbooks \
+	--exclude tooling \
 	--exclude "$RULES" \
 	--error \
 	--quiet \

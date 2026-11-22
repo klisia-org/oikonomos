@@ -2,7 +2,7 @@
 """Stabilize the POT file before commit.
 
 Only new or removed strings get through; a regenerated POT with the same strings is restored, so
-translators see no churn. Shared by every app (written by aretenic's tooling/precommit/sync.py).
+translators see no churn. Shared by every app and kept in sync by a script.
 """
 
 import glob
