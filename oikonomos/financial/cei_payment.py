@@ -43,6 +43,9 @@ def on_payment_entry_submit(doc, method=None):
 	to a CEI, recompute payment status and advance / notify as needed."""
 	for cei_name in _ceis_from_payment_entry(doc):
 		_react(cei_name)
+	from oikonomos.financial.application import react_to_payment_entry
+
+	react_to_payment_entry(doc)
 
 
 def on_payment_entry_cancel(doc, method=None):

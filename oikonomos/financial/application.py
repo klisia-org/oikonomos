@@ -15,12 +15,15 @@ The shared billing helpers (`_billing_context`, `_ensure_applicant_customer`,
 
 import frappe
 from frappe import _
+from frappe.utils import flt
 
 
 def on_applicant_insert(doc, method=None):
 	"""after_insert handler. Billing failures are logged, not raised, so a
 	pricing/config gap never blocks applicant creation (matches the prior
 	controller behaviour)."""
+	if frappe.flags.in_import:
+		return  # an imported application is history, not a new one to charge (seminary 094 §1)
 	try:
 		_generate_application_invoices(doc.name)
 	except Exception:
@@ -77,6 +80,11 @@ def _generate_application_invoices(applicant_name):
 			)
 		)
 
+	# Seminary decides the discount: a window, a fee code (seminary decisions/113 §4).
+	percent, source = _discount(applicant)
+	if percent >= 100:
+		return _empty_invoice_result("fee waived")
+
 	ctx = _billing_context()
 	counts = {"created": 0, "skipped": 0, "failed": 0}
 
@@ -126,7 +134,8 @@ def _generate_application_invoices(applicant_name):
 					"selling_price_list": default_price_list,
 					"base_grand_total": price_list_rate,
 					"payment_terms_template": fc.payment_term_template,
-					"remarks": summary,
+					"remarks": summary
+					+ (" " + _("({0}% off: {1})").format(f"{percent:g}", _(source or "")) if percent else ""),
 					"seminary_trigger": tag,
 					"seminary_summary": summary,
 					"items": [
@@ -140,6 +149,7 @@ def _generate_application_invoices(applicant_name):
 							"cost_center": ctx["cost_center"],
 							"base_rate": 0,
 							"price_list_rate": price_list_rate,
+							"discount_percentage": percent,
 						}
 					],
 					"cost_center": ctx["cost_center"],
@@ -157,3 +167,111 @@ def _generate_application_invoices(applicant_name):
 
 	frappe.logger().info(f"generate_application_invoices({applicant_name}): {counts}")
 	return counts
+
+
+# -- discounts and waivers (seminary decisions/113) --------------------------------------------
+
+
+def _discount(applicant):
+	try:
+		from seminary.seminary.admissions import application_fee_discount
+	except ImportError:
+		return 0.0, None
+	percent, source = application_fee_discount(applicant)
+	return min(max(flt(percent), 0), 100), source
+
+
+def _application_invoices(applicant_name, docstatus=("<", 2)):
+	return frappe.get_all(
+		"Sales Invoice",
+		filters={
+			"seminary_trigger": ("like", f"APP:{applicant_name}:%"),
+			"docstatus": docstatus,
+			"is_return": 0,
+		},
+		pluck="name",
+		order_by="creation asc",
+	)
+
+
+def application_fee_configured(program):
+	return bool(frappe.db.exists("Program Fees", {"program": program, "pgm_feeevent": "Application"}))
+
+
+def application_fee_paid(applicant_name):
+	"""Payment Entries allocated to the applicant's invoices; credit notes don't count."""
+	invoices = _application_invoices(applicant_name, 1)
+	if not invoices:
+		return 0.0
+	rows = frappe.get_all(
+		"Payment Entry Reference",
+		filters={
+			"reference_doctype": "Sales Invoice",
+			"reference_name": ("in", invoices),
+			"docstatus": 1,
+		},
+		fields=["allocated_amount"],
+	)
+	return flt(sum(flt(r.allocated_amount) for r in rows), 2)
+
+
+def waive_application_fee(applicant_name, percent, reason):
+	"""Bring each open application invoice down to `percent` off its price-list
+	price: a draft is repriced, a submitted one gets a credit note."""
+	from erpnext.controllers.sales_and_purchase_return import make_return_doc
+
+	percent = min(max(flt(percent), 0), 100)
+	done = []
+	for name in _application_invoices(applicant_name):
+		inv = frappe.get_doc("Sales Invoice", name)
+		if inv.docstatus == 0:
+			for item in inv.items:
+				item.discount_percentage = percent
+				item.rate = 0
+			inv.flags.ignore_permissions = True
+			inv.run_method("calculate_taxes_and_totals")
+			inv.save()
+			done.append(inv.name)
+			continue
+		full = sum(flt(i.price_list_rate or i.rate) * flt(i.qty) for i in inv.items)
+		target = flt(full * (100 - percent) / 100, 2)
+		amount = flt(flt(inv.outstanding_amount) - target, 2)
+		if amount <= 0 or flt(inv.grand_total) <= 0:
+			continue
+		if frappe.db.exists("Sales Invoice", {"return_against": inv.name, "docstatus": 1, "is_return": 1}):
+			continue
+		ratio = amount / flt(inv.grand_total)
+		credit = make_return_doc("Sales Invoice", inv.name)
+		for item in credit.items:
+			item.qty = flt(item.qty) * ratio
+		if credit.get("discount_amount"):
+			credit.discount_amount = flt(credit.discount_amount) * ratio
+		credit.remarks = (_("Application fee waiver ({0}%): {1}").format(f"{percent:g}", reason or ""))[:140]
+		# ERPNext compares the credit to the invoice's outstanding before it
+		# recomputes totals; stale mapped totals make the credit keep its own
+		# outstanding, and the invoice would stay unpaid.
+		credit.run_method("calculate_taxes_and_totals")
+		credit.update_outstanding_for_self = 0
+		credit.insert(ignore_permissions=True)
+		credit.submit()
+		done.append(credit.name)
+	return done
+
+
+def react_to_payment_entry(pe_doc):
+	"""Payment Entry hook: a paid application fee starts review (decisions/113 §6)."""
+	applicants = set()
+	for ref in pe_doc.references or []:
+		if ref.reference_doctype != "Sales Invoice" or not ref.reference_name:
+			continue
+		tag = frappe.db.get_value("Sales Invoice", ref.reference_name, "seminary_trigger") or ""
+		if tag.startswith("APP:"):
+			applicants.add(tag[4:].rsplit(":", 1)[0])
+	if not applicants:
+		return
+	from seminary.seminary import admissions
+
+	if not hasattr(admissions, "on_fee_settled"):
+		return
+	for applicant in applicants:
+		admissions.on_fee_settled(applicant)

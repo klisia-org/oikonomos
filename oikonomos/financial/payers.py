@@ -17,25 +17,19 @@ import frappe
 
 
 def get_payers(program_enrollment, method=None):
+	"""Give the enrollment its payer header and a payer row for each fee its program
+	charges. Run again (`sync_enrollment_payers`), it adds only the fee rows still
+	missing, so payer splits the school edited stay as they are."""
 	pe = program_enrollment
 	pen = pe.name
-	active = pe.pgmenrol_active
-	student = pe.student
-	turn = 1
-	while turn <= 2:
-		if not frappe.db.exists({"doctype": "Payers Fee Category PE", "pf_pe": pen}) and turn == 1:
-			pfc = frappe.new_doc("Payers Fee Category PE")
-			pfc.pf_pe = pen
-			pfc.pf_student = student
-			pfc.pf_active = active
-			pfc.pf_custgroup = "Student"
-			pfc.insert()
-			pfc.save()
-			turn += 1
-		elif frappe.db.exists({"doctype": "Payers Fee Category PE", "pf_pe": pen}) and turn == 2:
-			get_payers_fees(pen)
-			break
-	return
+	if not frappe.db.exists("Payers Fee Category PE", {"pf_pe": pen}):
+		pfc = frappe.new_doc("Payers Fee Category PE")
+		pfc.pf_pe = pen
+		pfc.pf_student = pe.student
+		pfc.pf_active = pe.pgmenrol_active
+		pfc.pf_custgroup = "Student"
+		pfc.insert()
+	get_payers_fees(pen)
 
 
 def get_payers_fees(pen):
@@ -51,21 +45,18 @@ def get_payers_fees(pen):
 		(pen),
 		as_list=1,
 	)
-	row_count = frappe.db.sql(
-		"""select count(pf.pgm_feecategory) from `tabProgram Enrollment`pe, `tabStudent` s, `tabProgram` p, `tabProgram Fees` pf, `tabFee Category` fc
-			where pe.student = s.name and
-			pe.program = p.name and
-			p.name = pf.program and
-			pf.pgm_feecategory = fc.name and
-			pe.name = %s""",
-		(pen),
-	)[0][0]
-	i = 0
-	while i < row_count:
-		feecat = doc[i][0]
-		event = doc[i][1]
-		customer = doc[i][2]
-		term = doc[i][3]
+	have = {
+		(r.fee_category, r.pep_event)
+		for r in frappe.get_all(
+			"pgm_enroll_payers",
+			filters={"parent": pen, "parenttype": "Payers Fee Category PE"},
+			fields=["fee_category", "pep_event"],
+		)
+	}
+	for feecat, event, customer, _percentage, term in doc:
+		if (feecat, event) in have:
+			continue
+		have.add((feecat, event))
 		ppe = frappe.new_doc("pgm_enroll_payers")
 		ppe.parent = pen
 		ppe.parentfield = "pf_payers"
@@ -76,6 +67,3 @@ def get_payers_fees(pen):
 		ppe.payterm_payer = term
 		ppe.pay_percent = "100"
 		ppe.insert()
-		ppe.save()
-		i += 1
-	return

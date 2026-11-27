@@ -70,5 +70,21 @@
   "modified": "2026-06-01 20:30:00.000000",
   "name": "Readmission",
   "trigger": "Readmission"
+ },
+ {
+  "active": 1,
+  "docstatus": 0,
+  "doctype": "Trigger Fee Events",
+  "modified": "2026-11-27 12:00:00.000000",
+  "name": "Incomplete Extension Request",
+  "trigger": "Incomplete Extension Request"
+ },
+ {
+  "active": 1,
+  "docstatus": 0,
+  "doctype": "Trigger Fee Events",
+  "modified": "2026-11-27 12:00:00.000000",
+  "name": "Transcript Request",
+  "trigger": "Transcript Request"
  }
 ]
