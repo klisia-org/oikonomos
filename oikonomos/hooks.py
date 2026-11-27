@@ -125,6 +125,9 @@ before_install = "oikonomos.install.before_install"
 after_install = "oikonomos.install.after_install"
 after_sync = "oikonomos.install.after_sync"
 after_migrate = "oikonomos.install.after_migrate"
+
+# payments: accounts staff are told about, and fix, a payment the site failed to record
+unrecorded_payment_roles = ["Accounts Manager"]
 before_uninstall = "oikonomos.install.before_uninstall"
 
 # Uninstallation
@@ -236,6 +239,7 @@ doc_events = {
 			"oikonomos.oikonomos.doctype.student_balance.student_balance.add_invoice_to_student_balance",
 			"oikonomos.financial.cei_payment.maybe_advance_cei_on_payment",
 			"oikonomos.financial.graduation.on_si_submit",
+			"oikonomos.financial.requests.on_si_submit",
 		],
 		"on_update_after_submit": [
 			"oikonomos.oikonomos.doctype.student_balance.student_balance.refresh_balance_on_invoice_update",
@@ -254,6 +258,7 @@ doc_events = {
 		"on_submit": [
 			"oikonomos.financial.cei_payment.on_payment_entry_submit",
 			"oikonomos.financial.graduation.on_payment_entry_submit",
+			"oikonomos.financial.requests.on_payment_entry_submit",
 		],
 		"on_cancel": [
 			"oikonomos.financial.cei_payment.on_payment_entry_cancel",

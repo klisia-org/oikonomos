@@ -101,6 +101,55 @@ class OikonomosFinancialBackend(FinancialBackend):
 
 		return application_payment_url(applicant_name)
 
+	def application_fee_outstanding(self, applicant_name: str) -> bool:
+		return bool(
+			frappe.db.sql(
+				"""select name from `tabSales Invoice`
+				where seminary_trigger like %(prefix)s and docstatus < 2 and outstanding_amount > 0
+				limit 1""",
+				{"prefix": f"APP:{applicant_name}:%"},
+			)
+		)
+
+	# -- application fee discounts and waivers (seminary decisions/113) --
+
+	def application_fee_configured(self, program: str) -> bool:
+		from oikonomos.financial.application import application_fee_configured
+
+		return application_fee_configured(program)
+
+	def application_fee_paid(self, applicant_name: str) -> float:
+		from oikonomos.financial.application import application_fee_paid
+
+		return application_fee_paid(applicant_name)
+
+	def waive_application_fee(self, applicant_name: str, percent: float, reason: str) -> list:
+		from oikonomos.financial.application import waive_application_fee
+
+		return waive_application_fee(applicant_name, percent, reason)
+
+	# -- Incomplete extensions and transcripts (seminary decisions/119 §6) --
+
+	def charge_incomplete_extension(self, request_name: str) -> list:
+		from oikonomos.financial.requests import charge_incomplete_extension
+
+		return charge_incomplete_extension(request_name)
+
+	def charge_transcript_request(self, request_name: str) -> list:
+		from oikonomos.financial.requests import charge_transcript_request
+
+		return charge_transcript_request(request_name)
+
+	def payment_status_for_transcript_request(self, request_name: str) -> PaymentAggregate:
+		from oikonomos.financial.requests import TRANSCRIPT, payment_status
+
+		return payment_status(TRANSCRIPT, request_name)
+
+	def waive_request_charges(self, doctype: str, name: str, reason: str) -> list:
+		from oikonomos.financial.requests import waive_request_charges
+
+		return waive_request_charges(doctype, name, reason)
+
 	def invoice_payment_url(self, invoice_name: str) -> dict | None:
 		from oikonomos.financial.payment_urls import invoice_payment_url
 
